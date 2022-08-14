@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
-import { apiRoutes } from './routes/index'
+import { apiRoutes } from './commons/routes/index'
 
 dotenv.config();
 

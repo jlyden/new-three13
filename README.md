@@ -16,7 +16,7 @@ npm run serve
 ## Helpful resources
 ### guides
 * init: https://ultimatecourses.com/blog/setup-typescript-nodejs-express
-* org: https://blog.logrocket.com/organizing-express-js-project-structure-better-productivity/
+* tests: https://losikov.medium.com/part-4-node-js-express-typescript-unit-tests-with-jest-5204414bf6f0
 
 ### docs
 * express: https://expressjs.com/en/guide/routing.html
