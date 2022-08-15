@@ -1,8 +1,15 @@
 import { Request, Response } from 'express';
 
 export function handleCreateRound(req: Request, res: Response) {
+  // req will include gameId, previous round #, count of players
+  // generate deck & shuffle
+  // deal hand (card count === new round #) to each player
+  // update game with new round #
+  // save round: deck, hands, user to play
+  const bodyParams = JSON.stringify(req.body);
+  res.send(`POST /rounds | Params: ${bodyParams}`);
 }
 
-export function handleGetRounds(req: Request, res: Response) {
-  res.send('<h1>something is working</h1><h2>but this is not a round</h2>');
+export function handleGetRounds(_req: Request, res: Response) {
+  res.send('GET /rounds | Params: N/A');
 }
