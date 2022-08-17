@@ -16,12 +16,10 @@ npm run serve
 ## Helpful resources
 ### sample test requests via [curl](https://curl.se/)
 ```
-curl -i -X GET http://localhost:3000/rounds
-curl -i -X GET http://localhost:3000/game/<guid>
-curl -i -X GET http://localhost:3000/game/<guid>/rounds/<int>/draw
-curl -i -X DELETE http://localhost:3000/game/<guid>
-curl -i -X POST -H 'Content-Type: application/json' -d '{"round": 3, "playerCount": 4}' http://localhost:3000/rounds
-curl -i -X PUT -H 'Content-Type: application/json' -d '{"player": "<guid>", "card": "<abbrev>"}' http://localhost:3000/game/<guid>/rounds/<int>/discard
+curl -i -X GET http://localhost:3000/games/<guid>/rounds/<int>
+curl -i -X POST -H 'Content-Type: application/json' -d '{"playerCount": <int>}' http://localhost:3000//games/<guid>/rounds/<int>
+curl -i -X PUT -H 'Content-Type: application/json' -d '{"player": "<guid>", "action": "discard", "card": "<abbrv>"}' http://localhost:3000/games/<guid>/rounds/<int>
+curl -i -X DELETE http://localhost:3000/games/<guid>/rounds/<int>
 ```
 
 ### guides

@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
-import { apiRoutes } from './commons/routes/index'
+import { rounds } from './commons/routes/rounds';
 
 dotenv.config();
 
@@ -13,6 +13,6 @@ const app: Express = express();
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/', apiRoutes);
+app.use(rounds);
 
 app.listen(PORT, () => console.log(`running on ${PORT} ⚡`));
