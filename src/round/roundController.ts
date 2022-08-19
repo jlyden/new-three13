@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import { createRound } from './roundService';
+
+import { RoundRouteParams } from "../commons/interfaces/round-route";
 
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
@@ -10,15 +13,9 @@ export function handleGetRound(req: Request, res: Response, next: NextFunction) 
 }
 
 export function handleCreateRound(req: Request, res: Response, next: NextFunction) {
-  // req will include gameId, new round number, count of players (body)
-  // generate deck & shuffle
-  // deal hand (card count === new round #) to each player
-  // update game with new round #
-  // save round: deck, hands, user to play
   try {
-    const routeParams = JSON.stringify(req.params);
-    const bodyParams = JSON.stringify(req.body);
-    res.send(`POST /rounds | Params: ${routeParams} && ${bodyParams}`);
+    const faceUpCard = createRound(getRoundRouteParams(req));
+    res.send(`POST /rounds | Params: ${JSON.stringify(req.params)} | Return: ${faceUpCard}`);
   } catch (error) {
     next(error);
   }
@@ -49,4 +46,11 @@ export function handleDeleteRound(req: Request, res: Response, next: NextFunctio
   } catch (error) {
     next(error);
   }
+}
+
+function getRoundRouteParams(req: Request): RoundRouteParams
+{
+  const { gameId, roundNumber } = req.params;
+
+  return { gameId, roundNumber: parseInt(roundNumber) };
 }

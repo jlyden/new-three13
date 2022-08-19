@@ -14,6 +14,7 @@ npm run serve
 ```
 
 ## TODO
+* add & setup inversify
 * generic validation middleware runner
 
 ## Helpful resources
@@ -35,3 +36,4 @@ curl -i -X DELETE http://localhost:3000/games/<guid>/rounds/<int>
 * express: https://expressjs.com/en/guide/routing.html
 * typescript: https://www.typescriptlang.org/docs/handbook/modules.html
 * jest: https://kulshekhar.github.io/ts-jest/docs/getting-started/installation
+* inversify: https://doc.inversify.cloud/en/

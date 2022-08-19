@@ -1,13 +1,13 @@
-import { IRoundRouteParams } from '../../src/commons/interfaces/i-round-route';
+import { RoundRouteParams } from '../../src/commons/interfaces/round-route';
 import { roundRouteSchema } from '../../src/commons/middleware/validators/round-route-validator';
 
 describe('roundRouteSchema', () => {
   const testGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';
-  const validRoundRouteParams = { game_id: testGameId, round_number: 3 };
+  const validRoundRouteParams = { gameId: testGameId, roundNumber: 3 };
 
-  it('passes with guid game_id and all valid round_numbers', () => {
+  it('passes with guid gameId and all valid roundNumbers', () => {
     for (let i = 3; i < 14; i++) {
-      const paramsToValidate: IRoundRouteParams = { game_id: testGameId, round_number: i };
+      const paramsToValidate: RoundRouteParams = { gameId: testGameId, roundNumber: i };
       const { value, error } = roundRouteSchema.validate(paramsToValidate);
       expect(value).toEqual(paramsToValidate);
       expect(error).toEqual(undefined);
@@ -20,16 +20,16 @@ describe('roundRouteSchema', () => {
   const isRequired = 'is required';
 
   it.each([
-    [ 'game_id is null', { game_id: null }, mustBeString ],
-    [ 'game_id is undefined', { game_id: undefined }, isRequired ],
-    [ 'game_id is a number', { game_id: 42 }, mustBeString ],
-    [ 'game_id is a non-guid string', { game_id: 'dory' }, mustBeGuid ],
-    [ 'game_id is an invalid guid', { game_id: '82a4af67-cbff-41a2-976f-792b22a5yyyy' }, mustBeGuid ],
-    [ 'round_number is null', { round_number: null }, mustBeNumber ],
-    [ 'round_number is undefined', { round_number: undefined }, isRequired ],
-    [ 'round_number is string', { round_number: 'dory' }, mustBeNumber ],
-    [ 'round_number is too low', { round_number: 2 }, 'must be greater than or equal to 3' ],
-    [ 'round_number is too high', { round_number: 14 }, 'must be less than or equal to 13' ],
+    [ 'gameId is null', { gameId: null }, mustBeString ],
+    [ 'gameId is undefined', { gameId: undefined }, isRequired ],
+    [ 'gameId is a number', { gameId: 42 }, mustBeString ],
+    [ 'gameId is a non-guid string', { gameId: 'dory' }, mustBeGuid ],
+    [ 'gameId is an invalid guid', { gameId: '82a4af67-cbff-41a2-976f-792b22a5yyyy' }, mustBeGuid ],
+    [ 'roundNumber is null', { roundNumber: null }, mustBeNumber ],
+    [ 'roundNumber is undefined', { roundNumber: undefined }, isRequired ],
+    [ 'roundNumber is string', { roundNumber: 'dory' }, mustBeNumber ],
+    [ 'roundNumber is too low', { roundNumber: 2 }, 'must be greater than or equal to 3' ],
+    [ 'roundNumber is too high', { roundNumber: 14 }, 'must be less than or equal to 13' ],
   ])('fails when ', (_: string, mutator: object, expectedErrorPart: string) => {
     const paramsToValidate = { ...validRoundRouteParams, ...mutator };
     const { value, error } = roundRouteSchema.validate(paramsToValidate);
