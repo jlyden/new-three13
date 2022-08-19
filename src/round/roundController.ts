@@ -24,16 +24,24 @@ export function handleCreateRound(req: Request, res: Response, next: NextFunctio
   }
 }
 
-export function handleUpdateRound(req: Request, res: Response, next: NextFunction) {
+export function handleUpdateRoundDraw(req: Request, res: Response, next: NextFunction) {
   try {
     const routeParams = JSON.stringify(req.params);
-    const bodyParams = JSON.stringify(req.body);
-    res.send(`PUT /rounds | Params: ${routeParams} && ${bodyParams}`);
+    res.send(`PUT /rounds/draw | Params: ${routeParams}`);
   } catch (error) {
     next(error);
   }
 }
 
+export function handleUpdateRoundDiscard(req: Request, res: Response, next: NextFunction) {
+  try {
+    const routeParams = JSON.stringify(req.params);
+    const bodyParams = JSON.stringify(req.body);
+    res.send(`PUT /rounds/discard | Params: ${routeParams} && ${bodyParams}`);
+  } catch (error) {
+    next(error);
+  }
+}
 export function handleDeleteRound(req: Request, res: Response, next: NextFunction) {
   try {
     const routeParams = JSON.stringify(req.params);

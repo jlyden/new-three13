@@ -1,17 +1,23 @@
 import express from 'express';
-import { handleCreateRound, handleDeleteRound, handleGetRound, handleUpdateRound } from '../../round/roundController';
+import { handleCreateRound, handleDeleteRound, handleGetRound, handleUpdateRoundDiscard, handleUpdateRoundDraw } from '../../round/roundController';
+import { validateRoundRouteSchema } from '../middleware/validators/round-route-validator';
 
-const GAME_ID = 'game_id';
-const ROUND_NUMBER = 'round_number';
+const ROUNDS_ROUTE = `/games/:game_id/rounds/:round_number`;
 
 const rounds = express.Router();
 
 //rounds.param(GAME_ID, retrieveGameFromGameId);
 
-rounds.route(`/games/:${GAME_ID}/rounds/:${ROUND_NUMBER}`)
-  .get(handleGetRound)
-  .post(handleCreateRound)
-  .put(handleUpdateRound)
-  .delete(handleDeleteRound);
+rounds.use(ROUNDS_ROUTE, validateRoundRouteSchema);
+
+rounds.get(ROUNDS_ROUTE, handleGetRound);
+
+rounds.post(ROUNDS_ROUTE, handleCreateRound);
+
+rounds.put(`${ROUNDS_ROUTE}/draw`, handleUpdateRoundDraw);
+
+rounds.put(`${ROUNDS_ROUTE}/discard`, handleUpdateRoundDiscard);
+
+rounds.delete(ROUNDS_ROUTE, handleDeleteRound);
 
 export { rounds };
