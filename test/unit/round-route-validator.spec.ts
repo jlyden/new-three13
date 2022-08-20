@@ -1,4 +1,4 @@
-import { RoundRouteParams } from '../../src/commons/interfaces/round-route';
+import { RoundRouteDomain } from '../../src/round/domains/round-route';
 import { roundRouteSchema } from '../../src/commons/middleware/validators/round-route-validator';
 
 describe('roundRouteSchema', () => {
@@ -7,7 +7,7 @@ describe('roundRouteSchema', () => {
 
   it('passes with guid gameId and all valid roundNumbers', () => {
     for (let i = 3; i < 14; i++) {
-      const paramsToValidate: RoundRouteParams = { gameId: testGameId, roundNumber: i };
+      const paramsToValidate: RoundRouteDomain = { gameId: testGameId, roundNumber: i };
       const { value, error } = roundRouteSchema.validate(paramsToValidate);
       expect(value).toEqual(paramsToValidate);
       expect(error).toEqual(undefined);

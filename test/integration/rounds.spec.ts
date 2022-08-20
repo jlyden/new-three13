@@ -2,6 +2,7 @@ import express from 'express';
 import request from 'supertest';
 
 import { rounds } from '../../src/commons/routes/rounds';
+import { CardDomain } from '../../src/card-group/domains/card';
 import * as roundService from '../../src/round/roundService';
 
 const app = express();
@@ -23,9 +24,10 @@ describe('rounds', () => {
 
   describe('POST', () => {
     it('returns successfully', async () => {
-      jest.spyOn(roundService, 'createRound').mockReturnValue('H2');
+      const twoOfHearts: CardDomain = { value: 2, suit: 'H' }
+      jest.spyOn(roundService, 'createRound').mockReturnValue(twoOfHearts);
       const { text } = await request(app).post(commonRoundRoute);
-      expect(text).toEqual(`POST /rounds | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"} | Return: H2`);
+      expect(text).toEqual(`POST /rounds | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"} | Return: {"value":2,"suit":"H"}`);
     });
   });
 

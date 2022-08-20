@@ -1,4 +1,4 @@
-export interface RoundRouteParams {
+export interface RoundRouteDomain {
   gameId: string;
   roundNumber: number;
 }

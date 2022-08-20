@@ -1,4 +1,4 @@
-import { Game } from "../commons/interfaces/game";
+import { Game } from "./domains/game";
 
 export function saveGameDao(gameId: string, roundNumber: number) {
   // TODO!
