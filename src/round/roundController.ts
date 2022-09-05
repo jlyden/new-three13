@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { createRound } from './roundService';
 
 import { RoundRouteDomain } from "./domains/round-route";
-import { CardDomain } from '../card-group/domains/card';
+import { CreateRoundReturnDomain } from './domains/create-round-return';
 
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
@@ -15,8 +15,8 @@ export function handleGetRound(req: Request, res: Response, next: NextFunction) 
 
 export function handleCreateRound(req: Request, res: Response, next: NextFunction) {
   try {
-    const faceUpCard: CardDomain = createRound(getRoundRouteParams(req));
-    res.send(`POST /rounds | Params: ${JSON.stringify(req.params)} | Return: ${JSON.stringify(faceUpCard)}`);
+    const result: CreateRoundReturnDomain = createRound(getRoundRouteParams(req));
+    res.send(`POST /rounds | Params: ${JSON.stringify(req.params)} | Return: ${JSON.stringify(result)}`);
   } catch (error) {
     next(error);
   }

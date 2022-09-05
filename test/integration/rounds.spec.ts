@@ -4,6 +4,7 @@ import request from 'supertest';
 import { rounds } from '../../src/commons/routes/rounds';
 import { CardDomain } from '../../src/card-group/domains/card';
 import * as roundService from '../../src/round/roundService';
+import { CreateRoundReturnDomain } from '../../src/round/domains/create-round-return';
 
 const app = express();
 app.use(express.json());
@@ -13,7 +14,9 @@ describe('rounds', () => {
   const testGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';
   const roundNumber = 4;
   const commonRoundRoute = `/games/${testGameId}/rounds/${roundNumber}`;
+  const twoOfHearts: CardDomain = { value: 2, suit: 'H' }
   const defaultPutDiscardBody = { "card": "H2" }
+  const testUser = 'alice';
 
   describe('GET single', () => {
     it('returns successfully', async () => {
@@ -24,10 +27,13 @@ describe('rounds', () => {
 
   describe('POST', () => {
     it('returns successfully', async () => {
-      const twoOfHearts: CardDomain = { value: 2, suit: 'H' }
-      jest.spyOn(roundService, 'createRound').mockReturnValue(twoOfHearts);
+      const createRoundReturn: CreateRoundReturnDomain = {
+        visibleCard: twoOfHearts,
+        nextPlayer: testUser,
+      }
+      jest.spyOn(roundService, 'createRound').mockReturnValue(createRoundReturn);
       const { text } = await request(app).post(commonRoundRoute);
-      expect(text).toEqual(`POST /rounds | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"} | Return: {"value":2,"suit":"H"}`);
+      expect(text).toEqual(`POST /rounds | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"} | Return: ${JSON.stringify(createRoundReturn)}`);
     });
   });
 

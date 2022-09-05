@@ -6,8 +6,6 @@ const ROUNDS_ROUTE = `/games/:gameId/rounds/:roundNumber`;
 
 const rounds = express.Router();
 
-//rounds.param(gameId, retrieveGameFromGameId);
-
 rounds.use(ROUNDS_ROUTE, validateRoundRouteSchema);
 
 rounds.get(ROUNDS_ROUTE, handleGetRound);

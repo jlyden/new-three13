@@ -1,5 +1,5 @@
-import { RoundRouteDomain } from '../../src/round/domains/round-route';
-import { roundRouteSchema } from '../../src/commons/middleware/validators/round-route-validator';
+import { RoundRouteDomain } from '../../../src/round/domains/round-route';
+import { roundRouteSchema } from '../../../src/commons/middleware/validators/round-route-validator';
 
 describe('roundRouteSchema', () => {
   const testGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';

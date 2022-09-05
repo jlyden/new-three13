@@ -9,9 +9,9 @@ export function getGameDao(gameId: string): Game {
   // TODO!
   const game: Game = {
     gameId,
-    playerCount: 3,
-    roundNumber: 3,
-    nextPlayer: 'player-id-guid'
+    // TODO: these will be guids
+    playerList: [ 'alice', 'bob', 'charlie' ],
+    roundNumber: 3
   }
   return game;
 }

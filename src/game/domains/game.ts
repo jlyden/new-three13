@@ -1,6 +1,5 @@
 export interface Game {
   gameId: string;
-  playerCount: number;
+  playerList: string[];
   roundNumber: number;
-  nextPlayer: string;
 }
