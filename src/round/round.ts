@@ -1,7 +1,8 @@
-import { CardDomain } from '../card-group/domains/card';
+import { CardDomain, Suits } from '../card-group/domains/card';
 import { HandDomain } from '../card-group/domains/hand';
 import { RoundDomain } from './domains/round';
 import { getIndexOfRoundFirstPlayer } from '../commons/utils/utils';
+import { CardGroup } from '../card-group/card-group';
 
 export class Round {
   private id: string;
@@ -10,9 +11,9 @@ export class Round {
   private visibleCard: RoundDomain['visibleCard'];
   private nextPlayer: string;
 
-  constructor(roundNumber: number, playerList: string[], id: string) {
-    this.id = id;
-    this.deck = this.getShuffledDeck();
+  constructor(roundNumber: number, playerList: string[], gameId: string) {
+    this.id = `${gameId}/${roundNumber}`;
+    this.deck = new CardGroup().getShuffledDeck();
     this.hands = this.dealHands(roundNumber, playerList);
     this.visibleCard = this.drawCard();
     this.nextPlayer = this.setRoundFirstPlayer(roundNumber, playerList);
@@ -30,14 +31,9 @@ export class Round {
 
   drawCard(): CardDomain {
     // TODO! use this.deck
-    return { value: 1, suit: 'H' }
+    return { value: 3, suit: Suits.Heart }
   }
 
-  private getShuffledDeck(): CardDomain[] {
-    // TODO!
-    return [];
-  }
-  
   private dealHands(roundNumber: number, playerList: string[]): HandDomain[] {
     // TODO! use this.deck
     console.log(roundNumber, playerList);

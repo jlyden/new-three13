@@ -2,7 +2,7 @@ import express from 'express';
 import request from 'supertest';
 
 import { rounds } from '../../src/commons/routes/rounds';
-import { CardDomain } from '../../src/card-group/domains/card';
+import { CardDomain, Suits } from '../../src/card-group/domains/card';
 import * as roundService from '../../src/round/roundService';
 import { CreateRoundReturnDomain } from '../../src/round/domains/create-round-return';
 
@@ -14,7 +14,7 @@ describe('rounds', () => {
   const testGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';
   const roundNumber = 4;
   const commonRoundRoute = `/games/${testGameId}/rounds/${roundNumber}`;
-  const twoOfHearts: CardDomain = { value: 2, suit: 'H' }
+  const threeOfHearts: CardDomain = { value: 3, suit: Suits.Heart }
   const defaultPutDiscardBody = { "card": "H2" }
   const testUser = 'alice';
 
@@ -28,7 +28,7 @@ describe('rounds', () => {
   describe('POST', () => {
     it('returns successfully', async () => {
       const createRoundReturn: CreateRoundReturnDomain = {
-        visibleCard: twoOfHearts,
+        visibleCard: threeOfHearts,
         nextPlayer: testUser,
       }
       jest.spyOn(roundService, 'createRound').mockReturnValue(createRoundReturn);

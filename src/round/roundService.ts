@@ -3,13 +3,12 @@ import { getGame, saveGame } from "../game/gameService";
 import { Round } from "./round";
 import { RoundDomain } from "./domains/round";
 import { CreateRoundReturnDomain } from "./domains/create-round-return";
-import { saveToCache } from "../commons/utils/cache";
+import { getFromCache, saveToCache } from "../commons/utils/cache";
 
 export function createRound(roundParams: RoundRouteDomain): CreateRoundReturnDomain {
   const { gameId, roundNumber } = roundParams;
   const { playerList } = getGame(gameId);
-  const id = 'gameOne'; // TODO: remove when switching to db
-  const round = new Round(roundNumber, playerList, id);
+  const round = new Round(roundNumber, playerList, gameId);
   const roundInfo = round.getNewRound();
   saveRound(roundInfo);
   saveGame(gameId, roundNumber);
@@ -22,4 +21,9 @@ export function createRound(roundParams: RoundRouteDomain): CreateRoundReturnDom
 function saveRound(round: RoundDomain) {
   saveToCache(round.id, round);
   console.log(round);
+}
+
+export function getRound(roundId: string) {
+  console.log(roundId);
+  return getFromCache(roundId);
 }

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { createRound } from './roundService';
+import { createRound, getRound } from './roundService';
 
 import { RoundRouteDomain } from "./domains/round-route";
 import { CreateRoundReturnDomain } from './domains/create-round-return';
@@ -7,7 +7,9 @@ import { CreateRoundReturnDomain } from './domains/create-round-return';
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
     const routeParams = JSON.stringify(req.params);
-    res.send(`GET /rounds | Params: ${routeParams}`);
+    const { gameId, roundNumber } = getRoundRouteParams(req);
+    const result = getRound(`${gameId}/${roundNumber}`);
+    res.send(`GET /rounds | Params: ${routeParams} | Return: ${JSON.stringify(result)}`);
   } catch (error) {
     next(error);
   }
