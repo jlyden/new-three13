@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
-import { rounds } from './commons/routes/rounds';
+import { rounds } from './commons/routes/round';
 
 dotenv.config();
 

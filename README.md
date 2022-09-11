@@ -15,7 +15,7 @@ npm run serve
 
 ## TODO
 * finish methods related to creating round
-  * getShuffledDeck, dealHands, drawCard
+  * dealHands, drawCard
 * add & setup inversify
 * generic validation middleware runner
 

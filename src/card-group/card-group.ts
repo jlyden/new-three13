@@ -1,4 +1,4 @@
-import { assembleDeck, shuffleCards } from "../commons/utils/utils";
+import { assembleDeck, shuffleCards } from "../commons/utils/card-group";
 import { CardDomain } from "./domains/card";
 
 export class CardGroup {

@@ -1,5 +1,4 @@
 import { CardDomain, Suits } from '../card-group/domains/card';
-import { HandDomain } from '../card-group/domains/hand';
 import { RoundDomain } from './domains/round';
 import { getIndexOfRoundFirstPlayer } from '../commons/utils/utils';
 import { CardGroup } from '../card-group/card-group';
@@ -34,7 +33,7 @@ export class Round {
     return { value: 3, suit: Suits.Heart }
   }
 
-  private dealHands(roundNumber: number, playerList: string[]): HandDomain[] {
+  private dealHands(roundNumber: number, playerList: string[]): CardDomain[][] {
     // TODO! use this.deck
     console.log(roundNumber, playerList);
     return [];
