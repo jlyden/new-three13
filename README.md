@@ -14,24 +14,23 @@ npm run serve
 ```
 
 ## TODO
-* finish methods related to creating round
-  * dealHands, drawCard
+* update tests related to creating round
 * add & setup inversify
 * generic validation middleware runner
 
 ## Helpful resources
 ### sample test requests via [curl](https://curl.se/)
 ```
-curl -i -X GET http://localhost:3000/games/<guid>/rounds/<int>
-curl -i -X POST -H 'Content-Type: application/json' -d '{"playerCount": <int>}' http://localhost:3000/games/<guid>/rounds/<int>
-curl -i -X PUT http://localhost:3000/games/<guid>/rounds/<int>/draw
-curl -i -X PUT -H 'Content-Type: application/json' -d '{"card": "<abbrv>"}' http://localhost:3000/games/<guid>/rounds/<int>/discard
-curl -i -X DELETE http://localhost:3000/games/<guid>/rounds/<int>
+curl -i -X GET http://localhost:3000/game/<guid>/round/<int>
+curl -i -X POST -H 'Content-Type: application/json' -d '{"playerCount": <int>}' http://localhost:3000/game/<guid>/round/<int>
+curl -i -X PUT http://localhost:3000/game/<guid>/round/<int>/draw
+curl -i -X PUT -H 'Content-Type: application/json' -d '{"card": "<abbrv>"}' http://localhost:3000/game/<guid>/round/<int>/discard
+curl -i -X DELETE http://localhost:3000/game/<guid>/round/<int>
 ```
 
 ```
-curl -i -X POST -H 'Content-Type: application/json' -d '{"playerCount": 2}' http://localhost:3000/games/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/rounds/3
-curl -i -X GET http://localhost:3000/games/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/rounds/3
+curl -i -X POST -H 'Content-Type: application/json' -d '{"playerCount": 2}' http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/round/3
+curl -i -X GET http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/round/3
 ```
 
 ### guides

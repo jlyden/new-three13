@@ -13,8 +13,7 @@ export class CardGroup {
   }
 
   public getShuffledDeck(): CardDomain[] {
-    this.group = { ...shuffleCards(assembleDeck()) }
+    this.group = shuffleCards(assembleDeck());
     return this.getCards();
   }
-  
 }
