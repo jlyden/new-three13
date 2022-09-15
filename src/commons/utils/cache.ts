@@ -8,6 +8,10 @@ export function saveToCache(key: string, value: object): void {
   cache.set(key, value);
 }
 
-export function getFromCache(key: string): object|undefined {
-  return cache.get(key);
+export function getFromCache(key: string): object {
+  const value = cache.get(key);
+  if (!value) {
+    throw new Error(`Cache empty for key: ${key}`);
+  }
+  return value;
 }

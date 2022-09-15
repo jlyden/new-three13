@@ -14,7 +14,9 @@ npm run serve
 ```
 
 ## TODO
-* update tests related to creating round
+* update gameService to save to cache
+* add integration test for gameService
+* update tests related to creating round - include creating game
 * add & setup inversify
 * generic validation middleware runner
 
