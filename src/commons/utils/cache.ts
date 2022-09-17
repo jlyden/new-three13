@@ -13,5 +13,5 @@ export function getFromCache(key: string): object {
   if (!value) {
     throw new Error(`Cache empty for key: ${key}`);
   }
-  return value;
+  return value as object;
 }
