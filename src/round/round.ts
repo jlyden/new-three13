@@ -3,7 +3,7 @@ import { RoundDomain } from './domains/round';
 import { getIndexOfRoundFirstPlayer } from '../commons/utils/utils';
 import { CardGroup } from '../card-group/card-group';
 import { HandDomain } from '../card-group/domains/hand';
-import { CardNotFoundError } from '../commons/errors/card-not-found';
+import { ApiError, cardNotFoundError } from '../commons/errors/api-error';
 
 const RAN_OUT_OF_CARDS = 'ran out of cards in deck';
 
@@ -35,7 +35,8 @@ export class Round {
   drawCard(): CardDomain {
     const nextCard = this.deck.pop();
     if (!nextCard) {
-      throw new CardNotFoundError('drawCard: ' + RAN_OUT_OF_CARDS)
+      const message = 'drawCard: ' + RAN_OUT_OF_CARDS;
+      throw new ApiError({ ...cardNotFoundError, message });
     }
     return nextCard;
   }
@@ -57,7 +58,8 @@ export class Round {
       for (let player = 0; player < playerCount; player++) {
         const nextCard = this.deck.pop();
         if (!nextCard) {
-          throw new CardNotFoundError('dealHands: ' + RAN_OUT_OF_CARDS)
+          const message = 'dealHands: ' + RAN_OUT_OF_CARDS;
+          throw new ApiError({ ...cardNotFoundError, message });
         }
         cardGroups[player].push(nextCard);
       }

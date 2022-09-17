@@ -17,9 +17,7 @@ npm run serve
 * update integration test for getRound/createRound
   * save game to cache first
 * add integration test for gameController
-* update tests related to creating round - include creating game
 * add & setup inversify
-* generic validation middleware runner
 
 ## Helpful resources
 ### sample test requests via [curl](https://curl.se/)
@@ -40,6 +38,7 @@ curl -i -X GET http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/r
 * init: https://ultimatecourses.com/blog/setup-typescript-nodejs-express
 * tests: https://medium.com/@pojotorshemi/integration-test-on-express-restful-apis-using-jest-and-supertest-4cf5d1414ab0
   * with db conn: https://www.wwt.com/article/using-jest-to-run-integration-tests
+* custom errors: https://www.codeconcisely.com/posts/how-to-handle-errors-in-express-with-typescript/
 
 ### docs
 * express: https://expressjs.com/en/guide/routing.html

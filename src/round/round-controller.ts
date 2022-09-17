@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { createRound, getRound } from './round-service';
-
 import { RoundRouteDomain } from "./domains/round-route";
 import { CreateRoundReturnDomain } from './domains/create-round-return';
 import { roundRouteSchema } from './validators/round-route-validator';
-import { BadRequestError } from '../commons/errors/bad-request';
+import { ApiError, badRequestError } from '../commons/errors/api-error';
 
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
@@ -57,11 +56,9 @@ export function handleDeleteRound(req: Request, res: Response, next: NextFunctio
  * Return validated route params
  */
 function getRoundRouteParams(req: Request): RoundRouteDomain {
-  const { error } = roundRouteSchema.validate(req.params);
+  const { value, error } = roundRouteSchema.validate(req.params);
   if (error) {
-    throw new BadRequestError(error.message);
+    throw new ApiError({ ...badRequestError, message: error.message });
   }
-
-  const { gameId, roundNumber } = req.params;
-  return { gameId, roundNumber: parseInt(roundNumber) };
+  return { gameId: value.gameId, roundNumber: parseInt(value.roundNumber) };
 }

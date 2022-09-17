@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError } from "../commons/errors/bad-request";
+import { ApiError, badRequestError } from "../commons/errors/api-error";
 import { CreateRoundReturnDomain } from "../round/domains/create-round-return";
 import { createRound } from "../round/round-service";
 import { createGame, getGame } from "./game-service";
@@ -26,11 +26,9 @@ export function handleCreateGame(req: Request, res: Response, next: NextFunction
 }
 
 function getGameRouteParams(req: Request): string {
-  const { error } = gameRouteSchema.validate(req.params);
+  const { value, error } = gameRouteSchema.validate(req.params);
   if (error) {
-    throw new BadRequestError(error.message);
+    throw new ApiError({ ...badRequestError, message: error.message });
   }
-
-  const { gameId } = req.params;
-  return gameId;
+  return value.gameId;
 }
