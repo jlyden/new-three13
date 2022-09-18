@@ -3,15 +3,17 @@ import crypto from 'crypto';
 import { saveToCache, getFromCache } from "../commons/utils/cache";
 import { GameDomain } from "./domains/game";
 
-export function createGame(playerList: []): string {
-  const gameId = crypto.randomUUID();
+export const GAME_STARTING_ROUND_NUMBER = 3;
+
+export function createGame(playerList: [], gameId?: string): string {
+  const id = gameId ?? crypto.randomUUID();
   const game: GameDomain = {
-    id: gameId,
+    id,
     playerList: playerList,
-    roundNumber: 3
+    roundNumber: GAME_STARTING_ROUND_NUMBER
   }
   saveGame(game);
-  return gameId;
+  return id;
 }
 
 export function saveGame(game: GameDomain) {

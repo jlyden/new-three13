@@ -14,9 +14,9 @@ npm run serve
 ```
 
 ## TODO
-* update integration test for getRound/createRound
-  * save game to cache first
-* add integration test for gameController
+* fill in methods for draw and discard
+* update integration tests for draw and discard
+* round out integration tests for failure states
 * add & setup inversify
 
 ## Helpful resources
@@ -30,8 +30,10 @@ curl -i -X DELETE http://localhost:3000/game/<guid>/round/<int>
 ```
 
 ```
-curl -i -X POST -H 'Content-Type: application/json' -d '{"playerCount": 2}' http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/round/3
-curl -i -X GET http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/round/3
+curl -i -X POST -H 'Content-Type: application/json' -d '{"playerList": ["alice", "bob", "carol"], "gameId": "9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6"}' http://localhost:3000/game
+curl -i -X GET http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6
+curl -i -X POST -H 'Content-Type: application/json' http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/round/4
+curl -i -X GET http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/round/4
 ```
 
 ### guides

@@ -1,5 +1,12 @@
 import { Suits } from "../../src/card-group/domains/card";
 
+// Users
+const user1 = 'alice';
+const user2 = 'bob';
+const user3 = 'carol';
+
+export const playerList = [ user1, user2, user3 ];
+
 // Cards
 export const cardJ3 = { suit: Suits.Joker, value: 3 };
 export const cardJ4 = { suit: Suits.Joker, value: 4 };

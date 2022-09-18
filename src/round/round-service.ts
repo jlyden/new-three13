@@ -21,7 +21,6 @@ export function createRound(roundParams: RoundRouteDomain): CreateRoundReturnDom
 
 function saveRound(round: RoundDomain) {
   saveToCache(round.id, round);
-  console.log(round);
 }
 
 export function getRound(roundId: string): RoundDomain {

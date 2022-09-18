@@ -68,7 +68,6 @@ export class Round {
     const hands: HandDomain = {};
     for (let i = 0; i < playerCount; i++) {
       hands[playerList[i]] = cardGroups[i];
-      console.log(hands[playerList[i]]);
     }
 
     return hands;

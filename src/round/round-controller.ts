@@ -7,10 +7,9 @@ import { ApiError, badRequestError } from '../commons/errors/api-error';
 
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
-    const routeParams = JSON.stringify(req.params);
     const { gameId, roundNumber } = getRoundRouteParams(req);
     const result = getRound(`${gameId}/${roundNumber}`);
-    res.send(`GET /round | Params: ${routeParams} | Return: ${JSON.stringify(result)}`);
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -19,7 +18,7 @@ export function handleGetRound(req: Request, res: Response, next: NextFunction) 
 export function handleCreateRound(req: Request, res: Response, next: NextFunction) {
   try {
     const result: CreateRoundReturnDomain = createRound(getRoundRouteParams(req));
-    res.send(`POST /round | Params: ${JSON.stringify(req.params)} | Return: ${JSON.stringify(result)}`);
+    res.json(result);
   } catch (error) {
     next(error);
   }

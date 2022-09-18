@@ -10,7 +10,7 @@ describe('roundRouteSchema', () => {
       const paramsToValidate: RoundRouteDomain = { gameId: testGameId, roundNumber: i };
       const { value, error } = roundRouteSchema.validate(paramsToValidate);
       expect(value).toEqual(paramsToValidate);
-      expect(error).toEqual(undefined);
+      expect(error).toBe(undefined);
     }
   });
 

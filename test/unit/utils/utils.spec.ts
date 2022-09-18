@@ -59,6 +59,6 @@ describe('getIndexOfRoundFirstPlayer', () => {
     [6, 13, 4],
   ]) ('returns expected value for playerCount %d and round %d', (playerCount: number, roundNumber: number, expected: number) => {
     const actual = utils.getIndexOfRoundFirstPlayer(roundNumber, playerCount);
-    expect(actual).toEqual(expected);
+    expect(actual).toBe(expected);
   });
 });

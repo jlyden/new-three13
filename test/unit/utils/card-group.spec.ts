@@ -9,7 +9,7 @@ describe('assembleDeck', () => {
 
   it('generates a deck of cards with 46 members', () => {
     // 313 excludes Aces & Twos, but includes 2 Jokers; 52 - 8 + 2 = 46
-    expect(testDeck.length).toEqual(46);
+    expect(testDeck.length).toBe(46);
   });
 
   it('generates a deck with 11 cards for each of 4 suits, plus 2 Jokers', () => {
@@ -21,7 +21,7 @@ describe('assembleDeck', () => {
     const arrayOfSuitCounts: number[] = Object.values(reducedSuits);
     const arrayOfSuits: string[] = Object.keys(reducedSuits);
 
-    expect(arrayOfSuitCounts.length).toEqual(5);
+    expect(arrayOfSuitCounts.length).toBe(5);
     expect(arrayOfSuits).toEqual(Object.keys(Suits));
     expect(arrayOfSuitCounts).toEqual([11, 11, 11, 11, 2]);
   });
@@ -31,7 +31,7 @@ describe('assembleDeck', () => {
     const arrayOfValueCounts: number[] = Object.values(testDeckReducedArray);
     const arrayOfValues: string[] = Object.keys(testDeckReducedArray);
 
-    expect(arrayOfValueCounts.length).toEqual(11);
+    expect(arrayOfValueCounts.length).toBe(11);
     // Because of how code handles Jokers, there are 5 '3' and 5 '4' cards
     expect(arrayOfValueCounts).toEqual([5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4]);
     expect(arrayOfValues).toEqual(['3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']);
