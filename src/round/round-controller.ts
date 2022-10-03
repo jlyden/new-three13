@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
-import { createRound, getRound } from './round-service';
+import { createRound, drawCard, getRound } from './round-service';
 import { RoundRouteDomain } from "./domains/round-route";
 import { CreateRoundReturnDomain } from './domains/create-round-return';
 import { roundRouteSchema } from './validators/round-route-validator';
 import { ApiError, badRequestError } from '../commons/errors/api-error';
+import { drawRoundRouteSchema } from './validators/draw-round-route-validator';
+import { DrawRoundRouteDomain } from './domains/draw-round-route';
 
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
-    const { gameId, roundNumber } = getRoundRouteParams(req);
-    const result = getRound(`${gameId}/${roundNumber}`);
+    const result = getRound(getRoundId(getRoundRouteParams(req)));
     res.json(result);
   } catch (error) {
     next(error);
@@ -26,13 +27,16 @@ export function handleCreateRound(req: Request, res: Response, next: NextFunctio
 
 export function handleUpdateRoundDraw(req: Request, res: Response, next: NextFunction) {
   try {
-    const routeParams = JSON.stringify(req.params);
-    res.send(`PUT /round/draw | Params: ${routeParams}`);
+    // TODO: validate this is correct round of game - middleware!
+    const drawRoundRouteParams = getDrawRoundRouteParams(req);
+    const result = drawCard(getRoundId(drawRoundRouteParams), drawRoundRouteParams.source);
+    res.json(result);
   } catch (error) {
     next(error);
   }
 }
 
+// TODO: finish
 export function handleUpdateRoundDiscard(req: Request, res: Response, next: NextFunction) {
   try {
     const routeParams = JSON.stringify(req.params);
@@ -42,6 +46,8 @@ export function handleUpdateRoundDiscard(req: Request, res: Response, next: Next
     next(error);
   }
 }
+
+// TODO: finish
 export function handleDeleteRound(req: Request, res: Response, next: NextFunction) {
   try {
     const routeParams = JSON.stringify(req.params);
@@ -52,7 +58,7 @@ export function handleDeleteRound(req: Request, res: Response, next: NextFunctio
 }
 
 /**
- * Return validated route params
+ * Return validated round route params (GET, POST, DELETE)
  */
 function getRoundRouteParams(req: Request): RoundRouteDomain {
   const { value, error } = roundRouteSchema.validate(req.params);
@@ -60,4 +66,20 @@ function getRoundRouteParams(req: Request): RoundRouteDomain {
     throw new ApiError({ ...badRequestError, message: error.message });
   }
   return { gameId: value.gameId, roundNumber: parseInt(value.roundNumber) };
+}
+
+/**
+ * Return validated draw round route params (PUT /draw)
+ */
+ function getDrawRoundRouteParams(req: Request): DrawRoundRouteDomain {
+  const { value, error } = drawRoundRouteSchema.validate(req.params);
+  if (error) {
+    throw new ApiError({ ...badRequestError, message: error.message });
+  }
+  return { gameId: value.gameId, roundNumber: parseInt(value.roundNumber), source: value.source };
+}
+
+function getRoundId(roundRouteParams: RoundRouteDomain): string {
+  const { gameId, roundNumber } = roundRouteParams;
+  return `${gameId}/${roundNumber}`;
 }

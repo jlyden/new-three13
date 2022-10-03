@@ -1,5 +1,5 @@
 import NodeCache from 'node-cache';
-import { ApiError, badRequestError } from '../errors/api-error';
+import { ApiError, notFoundError } from '../errors/api-error';
 
 const CACHE_TTL = 36000; // 60 * 60 * 10
 
@@ -13,7 +13,7 @@ export function getFromCache(key: string): object {
   const value = cache.get(key);
   if (!value) {
     const message = `Cache empty for key: ${key}`;
-    throw new ApiError({ ...badRequestError, message });
+    throw new ApiError({ ...notFoundError, message });
   }
   return value as object;
 }

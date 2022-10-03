@@ -4,10 +4,10 @@
   "description": "app version of three thirteen card game",
   "main": "dist/src/index.js",
   "scripts": {
-    "lint-src": "eslint src/",
-    "lint-test": "eslint test/",
+    "lint:src": "eslint src/",
+    "lint:test": "eslint test/",
     "test": "npm run build && jest",
-    "precommit": "npm run lint-src && npm run lint-test && npm run test",
+    "precommit": "npm run lint:src && npm run lint:test && npm run test",
     "build": "rimraf dist && tsc",
     "preserve": "npm run build",
     "serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/index.js\"",

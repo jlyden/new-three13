@@ -8,12 +8,12 @@ export class CardGroup {
     this.group = cardsToAdd ?? [];
   }
 
-  public getCards(): CardDomain[] {
-    return this.group;
-  }
-
   public getShuffledDeck(): CardDomain[] {
     this.group = shuffleCards(assembleDeck());
     return this.getCards();
+  }
+
+  private getCards(): CardDomain[] {
+    return this.group;
   }
 }

@@ -1,6 +1,6 @@
 import { CardDomain, Suits } from "../../../src/card-group/domains/card";
 import { assembleDeck, reduceCardsByValue, shuffleCards } from "../../../src/commons/utils/card-group";
-import { cardS3, cardS4, cardS5, cardS6, cardS9, cardH13, cardH10, cardH3, cardH5 } from "../../common/test-data";
+import { cardS3, cardS4, cardS5, cardS6, cardS9, cardH13, cardH10, cardH3, cardH5 } from "../../helper/test-data";
 
 interface genObj { [key: string]: number }
 
@@ -42,6 +42,7 @@ describe('shuffleCards', () => {
   it('mixes up a deck of cards', () => {
     const testDeck = assembleDeck();
     const beforeDeck = JSON.parse(JSON.stringify(testDeck)) as typeof testDeck;
+    expect(beforeDeck).toStrictEqual(beforeDeck);
     const afterDeck = shuffleCards(testDeck);
     expect(afterDeck).not.toStrictEqual(beforeDeck);
   });

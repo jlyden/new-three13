@@ -3,12 +3,18 @@ import request from 'supertest';
 
 import { round } from '../../src/commons/routes/round';
 import { errorHandler } from '../../src/commons/middleware/error-handler';
-import { playerList } from '../common/test-data';
+import { missingGameId, playerList } from '../helper/test-data';
 import { GAME_STARTING_ROUND_NUMBER } from '../../src/game/game-service';
-import { Suits } from "../../src/card-group/domains/card";
 import { game } from '../../src/commons/routes/game';
+import { validateGenericCard } from '../helper/test-utils';
+import { DRAW_TYPE_DECK, DRAW_TYPE_VISIBLE } from '../../src/round/round-service';
+import { HttpCode } from '../../src/commons/errors/api-error';
 
 const savedGameId = '79057bd6-5502-488d-b9ba-ca0f51945a9a';
+const roundFour = 4;
+const roundTen = 10
+const playerOne = playerList[0];
+const playerTwo = playerList[1];
 
 const testApp = express();
 testApp.use(express.json());
@@ -17,11 +23,6 @@ testApp.use(round);
 testApp.use(errorHandler);
 
 describe('round', () => {
-  const testGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';
-  const roundNumber = 4;
-  const commonRoundRoute = `/game/${testGameId}/round/${roundNumber}`;
-  const defaultPutDiscardBody = { "card": "H2" }
-
   beforeAll(async () => {
     // Create Game and Round for GET, PUT
     const createGameParams = { playerList, gameId: savedGameId }
@@ -29,69 +30,151 @@ describe('round', () => {
     expect(gameResult.body).toBe(savedGameId);
     const roundResult = await request(testApp).post(`/game/${savedGameId}/round/${GAME_STARTING_ROUND_NUMBER}`);
     expect(roundResult.body).toBeDefined();
+    validateGenericCard(roundResult.body.visibleCard);
+    expect(roundResult.body.nextPlayer).toBe(playerOne);
   });
 
   describe('GET single', () => {
-    it('returns successfully when round is found', async () => {
-      const { body } = await request(testApp).get(`/game/${savedGameId}/round/${GAME_STARTING_ROUND_NUMBER}`);
-      expect(body).not.toBeUndefined();
+    it('returns as expected when round is found', async () => {
+      const { body, status } = await request(testApp).get(`/game/${savedGameId}/round/${GAME_STARTING_ROUND_NUMBER}`);
+      expect(status).toEqual(HttpCode.OK);
+      expect(body).toBeDefined();
       expect(body.id).toBe(`${savedGameId}/${GAME_STARTING_ROUND_NUMBER}`);
-      expect(body.deck).toBeDefined();
       expect(Array.isArray(body.deck)).toBeTruthy();
-      expect(body.hands).toBeDefined();
       expect(typeof body.hands).toBe('object');
-      expect(body.visibleCard.suit).toBeDefined();
-      expect(body.visibleCard.value).toBeDefined();
-      expect(Object.keys(Suits)).toContain(body.visibleCard.suit);
-      expect(typeof body.visibleCard.value).toBe('number');
-      expect(body.nextPlayer).toBeDefined();
-      expect(body.nextPlayer).toBe(playerList[0]);
+      validateGenericCard(body.visibleCard);
+      expect(body.nextPlayer).toBe(playerOne);
     });
 
-    it('returns 404 on cache miss', async () => {
-      const missingGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';
-      const expectedReturn = { error: `Cache empty for key: ${missingGameId}/${roundNumber}` }
-      const { body } = await request(testApp).get(`/game/${missingGameId}/round/${roundNumber}`);
+    it('returns 404 when Game Not Found', async () => {
+      const expectedReturn = { error: `Cache empty for key: ${missingGameId}/${GAME_STARTING_ROUND_NUMBER}` }
+      const { body, status } = await request(testApp).get(`/game/${missingGameId}/round/${GAME_STARTING_ROUND_NUMBER}`);
+      expect(status).toEqual(HttpCode.NOT_FOUND);
+      expect(body).toEqual(expectedReturn);
+    });
+
+    it('returns 404 when Round Not Found', async () => {
+      const expectedReturn = { error: `Cache empty for key: ${savedGameId}/${roundTen}` }
+      const { body, status } = await request(testApp).get(`/game/${savedGameId}/round/${roundTen}`);
+      expect(status).toEqual(HttpCode.NOT_FOUND);
       expect(body).toEqual(expectedReturn);
     });
   });
 
   describe('POST', () => {
-    it('returns successfully', async () => {
-      const { body } = await request(testApp).post(`/game/${savedGameId}/round/4`);
-      expect(body).not.toBeUndefined();
-      expect(body.visibleCard).toBeDefined();
-      expect(body.visibleCard.suit).toBeDefined();
-      expect(Object.keys(Suits)).toContain(body.visibleCard.suit);
-      expect(body.visibleCard.value).toBeDefined();
-      expect(typeof body.visibleCard.value).toBe('number');
-      expect(body.nextPlayer).toBe(playerList[1]);
+    it('returns as expected when Game exists', async () => {
+      const roundResult = await request(testApp).post(`/game/${savedGameId}/round/${roundFour}`);
+      expect(roundResult.status).toEqual(HttpCode.OK);
+      expect(roundResult.body).toBeDefined();
+      validateGenericCard(roundResult.body.visibleCard);
+      expect(roundResult.body.nextPlayer).toBe(playerTwo);
+
+      // Ensure game also updated correctly
+      const gameResult = await request(testApp).get(`/game/${savedGameId}`);
+      expect(gameResult.body).toBeDefined();
+      expect(gameResult.body.id).toEqual(savedGameId);
+      expect(gameResult.body.roundNumber).toEqual(roundFour);
     });
 
-    it('fails when trying to create a Round for a Game that is not found', () => {
-      // TODO
-      expect(true).toBe(true);
+    it('returns 404 when creating a Round for Not Found Game', async () => {
+      const expectedReturn = { error: `Cache empty for key: ${missingGameId}` }
+      const { body, status } = await request(testApp).post(`/game/${missingGameId}/round/${roundFour}`);
+      expect(status).toEqual(HttpCode.NOT_FOUND);
+      expect(body).toEqual(expectedReturn);
     });
   });
 
   describe('PUT draw', () => {
-    it('returns successfully', async () => {
-      const { text } = await request(testApp).put(`${commonRoundRoute}/draw`);
-      expect(text).toBe(`PUT /round/draw | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"}`);
+    it('returns as expected when drawing from deck', async () => {
+      // arrange
+      const beforeRound = await request(testApp).get(`/game/${savedGameId}/round/${roundFour}`);
+      expect(beforeRound.body).toBeDefined();
+      expect(beforeRound.body.nextPlayer).toEqual(playerTwo);
+      const beforeDeck = beforeRound.body.deck;
+      const lastCardInDeck = beforeRound.body.deck[beforeRound.body.deck.length-1];
+      const beforePlayerHand = beforeRound.body.hands[playerTwo];
+      const beforeVisibleCard = beforeRound.body.visibleCard;
+      // TODO: maybe? get before game and after game and make sure no change
+    
+      // act
+      const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${roundFour}/draw/${DRAW_TYPE_DECK}`);
+
+      // assert
+      expect(status).toEqual(HttpCode.OK);
+      expect(body.deck.length).toEqual(beforeDeck.length - 1);
+      expect(body.visibleCard).toStrictEqual(beforeVisibleCard);
+      const afterPlayerHand = body.hands[playerTwo];
+      expect(afterPlayerHand.length).toEqual(beforePlayerHand.length + 1);
+      const lastCardAdded = afterPlayerHand.pop();
+      expect(lastCardAdded).not.toStrictEqual(beforeVisibleCard);
+      expect(lastCardAdded).toStrictEqual(lastCardInDeck);
+      expect(afterPlayerHand).toStrictEqual(beforePlayerHand);
+    });
+
+    it('returns as expected when drawing visible card', async () => {
+      // arrange
+      const beforeRound = await request(testApp).get(`/game/${savedGameId}/round/${roundFour}`);
+      expect(beforeRound.body).toBeDefined();
+      expect(beforeRound.body.nextPlayer).toEqual(playerTwo);
+      const beforeDeck = beforeRound.body.deck;
+      const beforePlayerHand = beforeRound.body.hands[playerTwo];
+      const beforeVisibleCard = beforeRound.body.visibleCard;
+      // TODO: maybe? get before game and after game and make sure no change
+    
+      // act
+      const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${roundFour}/draw/${DRAW_TYPE_VISIBLE}`);
+
+      // assert
+      expect(status).toEqual(HttpCode.OK);
+      expect(body.deck.length).toEqual(beforeDeck.length - 1);
+      expect(body.visibleCard).not.toStrictEqual(beforeVisibleCard);
+      const afterPlayerHand = body.hands[playerTwo];
+      expect(afterPlayerHand.length).toEqual(beforePlayerHand.length + 1);
+      const lastCardAdded = afterPlayerHand.pop();
+      expect(lastCardAdded).toStrictEqual(beforeVisibleCard);
+      expect(afterPlayerHand).toStrictEqual(beforePlayerHand);
+    });
+
+    it('returns 400 when invalid Draw source', async () => {
+      const expectedReturn = { error: `"source" must be one of [deck, visible]` }
+      const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${roundFour}/draw/cheese`);
+      expect(status).toEqual(HttpCode.BAD_REQUEST);
+      expect(body).toEqual(expectedReturn);
+    });
+
+    it('returns 404 when trying to Draw but Game Not Found', async () => {
+      const expectedReturn = { error: `Cache empty for key: ${missingGameId}/${roundFour}` }
+      const { body, status } = await request(testApp).put(`/game/${missingGameId}/round/${roundFour}/draw/${DRAW_TYPE_VISIBLE}`);
+      expect(status).toEqual(HttpCode.NOT_FOUND);
+      expect(body).toEqual(expectedReturn);
+    });
+
+    it('returns 404 when trying to Draw but Round Not Found', async () => {
+      const expectedReturn = { error: `Cache empty for key: ${savedGameId}/${roundTen}` }
+      const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${roundTen}/draw/${DRAW_TYPE_VISIBLE}`);
+      expect(status).toEqual(HttpCode.NOT_FOUND);
+      expect(body).toEqual(expectedReturn);
     });
   });
 
-  describe('PUT discard', () => {
-    it('returns successfully', async () => {
-      const { text } = await request(testApp).put(`${commonRoundRoute}/discard`).send(defaultPutDiscardBody);
-      expect(text).toBe(`PUT /round/discard | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"} && {"card":"H2"}`);
-    });
-  });
+  describe('Routes need real implementation', () => {
+    const testGameId = '1b952e3c-6351-4414-a5e3-eb5343030a07';
+    const roundNumber = 4;
+    const commonRoundRoute = `/game/${testGameId}/round/${roundNumber}`;
+    const defaultPutDiscardBody = { "card": "H2" }
 
-  describe('DELETE', () => {
-    it('returns successfully', async () => {
-      const { text } = await request(testApp).delete(commonRoundRoute);
-      expect(text).toBe(`DELETE /round | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"}`);
+    describe('PUT discard', () => {
+      it('returns successfully', async () => {
+        const { text } = await request(testApp).put(`${commonRoundRoute}/discard`).send(defaultPutDiscardBody);
+        expect(text).toBe(`PUT /round/discard | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"} && {"card":"H2"}`);
+      });
+    });
+  
+    describe('DELETE', () => {
+      it('returns successfully', async () => {
+        const { text } = await request(testApp).delete(commonRoundRoute);
+        expect(text).toBe(`DELETE /round | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"}`);
+      });
     });
   });
 });

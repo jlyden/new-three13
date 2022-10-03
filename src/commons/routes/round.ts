@@ -9,7 +9,7 @@ round.get(ROUND_ROUTE, handleGetRound);
 
 round.post(ROUND_ROUTE, handleCreateRound);
 
-round.put(`${ROUND_ROUTE}/draw`, handleUpdateRoundDraw);
+round.put(`${ROUND_ROUTE}/draw/:source`, handleUpdateRoundDraw);
 
 round.put(`${ROUND_ROUTE}/discard`, handleUpdateRoundDiscard);
 

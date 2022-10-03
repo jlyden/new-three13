@@ -7,6 +7,9 @@ const user3 = 'carol';
 
 export const playerList = [ user1, user2, user3 ];
 
+// Guids
+export const missingGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';
+
 // Cards
 export const cardJ3 = { suit: Suits.Joker, value: 3 };
 export const cardJ4 = { suit: Suits.Joker, value: 4 };

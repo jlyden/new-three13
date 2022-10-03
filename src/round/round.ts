@@ -5,37 +5,42 @@ import { CardGroup } from '../card-group/card-group';
 import { HandDomain } from '../card-group/domains/hand';
 import { ApiError, cardNotFoundError } from '../commons/errors/api-error';
 
-const RAN_OUT_OF_CARDS = 'ran out of cards in deck';
+export const RAN_OUT_OF_CARDS = 'ran out of cards in deck';
 
 export class Round {
-  private id: string;
-  private deck: RoundDomain['deck'];
-  private hands: RoundDomain['hands'];
-  private visibleCard: RoundDomain['visibleCard'];
-  private nextPlayer: string;
+  id = '';
+  deck: RoundDomain['deck'] = [];
+  hands: RoundDomain['hands'] = {};
+  visibleCard: RoundDomain['visibleCard'] = {
+    suit: '',
+    value: 0
+  };
+  nextPlayer = '';
 
-  constructor(roundNumber: number, playerList: string[], gameId: string) {
-    this.id = `${gameId}/${roundNumber}`;
-    this.deck = this.prepareDeck();
-    this.hands = this.dealHands(roundNumber, playerList);
-    this.visibleCard = this.drawCard();
-    this.nextPlayer = this.setRoundFirstPlayer(roundNumber, playerList);
+  static createNewRound(roundNumber: number, playerList: string[], gameId: string): Round {
+    const round = new Round();
+    round.id = `${gameId}/${roundNumber}`;
+    round.deck = round.prepareDeck();
+    round.hands = round.dealHands(roundNumber, playerList);
+    round.visibleCard = round.getCardFromDeck();
+    round.nextPlayer = round.setRoundFirstPlayer(roundNumber, playerList);
+    return round;
   }
 
-  getRound() {
-    return {
-      id: this.id,
-      deck: this.deck,
-      hands: this.hands,
-      visibleCard: this.visibleCard,
-      nextPlayer: this.nextPlayer,
-    }
+  static prepExistingRound(roundDomain: RoundDomain): Round {
+    const round = new Round();
+    round.id = roundDomain.id;
+    round.deck = roundDomain.deck;
+    round.hands = roundDomain.hands;
+    round.visibleCard = roundDomain.visibleCard;
+    round.nextPlayer = roundDomain.nextPlayer;
+    return round;
   }
 
-  drawCard(): CardDomain {
+  getCardFromDeck(): CardDomain {
     const nextCard = this.deck.pop();
     if (!nextCard) {
-      const message = 'drawCard: ' + RAN_OUT_OF_CARDS;
+      const message = 'getCardFromDeck: ' + RAN_OUT_OF_CARDS;
       throw new ApiError({ ...cardNotFoundError, message });
     }
     return nextCard;

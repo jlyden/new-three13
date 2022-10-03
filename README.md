@@ -14,7 +14,7 @@ npm run serve
 ```
 
 ## TODO
-* fill in methods for draw and discard
+* fill in methods for discard
 * update integration tests for draw and discard
 * round out integration tests for failure states
 * add & setup inversify
@@ -41,6 +41,7 @@ curl -i -X GET http://localhost:3000/game/9c9f9a0b-40a6-4d69-ad52-c1412fbbecc6/r
 * tests: https://medium.com/@pojotorshemi/integration-test-on-express-restful-apis-using-jest-and-supertest-4cf5d1414ab0
   * with db conn: https://www.wwt.com/article/using-jest-to-run-integration-tests
 * custom errors: https://www.codeconcisely.com/posts/how-to-handle-errors-in-express-with-typescript/
+* constuctor overloading: https://upmostly.com/angular/better-constructor-overloading-in-typescript-angular
 
 ### docs
 * express: https://expressjs.com/en/guide/routing.html
