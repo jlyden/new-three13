@@ -94,8 +94,8 @@ describe('round', () => {
       const lastCardInDeck = beforeRound.body.deck[beforeRound.body.deck.length-1];
       const beforePlayerHand = beforeRound.body.hands[playerTwo];
       const beforeVisibleCard = beforeRound.body.visibleCard;
-      // TODO: maybe? get before game and after game and make sure no change
-    
+      const beforeGameResult = await request(testApp).get(`/game/${savedGameId}`);
+
       // act
       const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${roundFour}/draw/${DRAW_TYPE_DECK}`);
 
@@ -109,6 +109,8 @@ describe('round', () => {
       expect(lastCardAdded).not.toStrictEqual(beforeVisibleCard);
       expect(lastCardAdded).toStrictEqual(lastCardInDeck);
       expect(afterPlayerHand).toStrictEqual(beforePlayerHand);
+      const afterGameResult = await request(testApp).get(`/game/${savedGameId}`);
+      expect(afterGameResult.body.roundNumber).toStrictEqual(beforeGameResult.body.roundNumber);
     });
 
     it('returns as expected when drawing visible card', async () => {
@@ -119,7 +121,7 @@ describe('round', () => {
       const beforeDeck = beforeRound.body.deck;
       const beforePlayerHand = beforeRound.body.hands[playerTwo];
       const beforeVisibleCard = beforeRound.body.visibleCard;
-      // TODO: maybe? get before game and after game and make sure no change
+      const beforeGameResult = await request(testApp).get(`/game/${savedGameId}`);
     
       // act
       const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${roundFour}/draw/${DRAW_TYPE_VISIBLE}`);
@@ -133,6 +135,8 @@ describe('round', () => {
       const lastCardAdded = afterPlayerHand.pop();
       expect(lastCardAdded).toStrictEqual(beforeVisibleCard);
       expect(afterPlayerHand).toStrictEqual(beforePlayerHand);
+      const afterGameResult = await request(testApp).get(`/game/${savedGameId}`);
+      expect(afterGameResult.body.roundNumber).toStrictEqual(beforeGameResult.body.roundNumber);
     });
 
     it('returns 400 when invalid Draw source', async () => {
@@ -142,17 +146,24 @@ describe('round', () => {
       expect(body).toEqual(expectedReturn);
     });
 
+    it('returns 400 when wrong round number is passed', async () => {
+      const expectedReturn = { error: `getDrawRoundRouteParams: unexpected round number. gameId: ${savedGameId} | expected roundNumber: 4 | passed: 3` }
+      const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${GAME_STARTING_ROUND_NUMBER}/draw/${DRAW_TYPE_VISIBLE}`);
+      expect(status).toEqual(HttpCode.BAD_REQUEST);
+      expect(body).toEqual(expectedReturn);
+    });
+
     it('returns 404 when trying to Draw but Game Not Found', async () => {
-      const expectedReturn = { error: `Cache empty for key: ${missingGameId}/${roundFour}` }
+      const expectedReturn = { error: `Cache empty for key: ${missingGameId}` }
       const { body, status } = await request(testApp).put(`/game/${missingGameId}/round/${roundFour}/draw/${DRAW_TYPE_VISIBLE}`);
       expect(status).toEqual(HttpCode.NOT_FOUND);
       expect(body).toEqual(expectedReturn);
     });
 
-    it('returns 404 when trying to Draw but Round Not Found', async () => {
-      const expectedReturn = { error: `Cache empty for key: ${savedGameId}/${roundTen}` }
+    it('returns 400 when trying to Draw but Round Not Found', async () => {
+      const expectedReturn = { error: `getDrawRoundRouteParams: unexpected round number. gameId: ${savedGameId} | expected roundNumber: 4 | passed: 10` }
       const { body, status } = await request(testApp).put(`/game/${savedGameId}/round/${roundTen}/draw/${DRAW_TYPE_VISIBLE}`);
-      expect(status).toEqual(HttpCode.NOT_FOUND);
+      expect(status).toEqual(HttpCode.BAD_REQUEST);
       expect(body).toEqual(expectedReturn);
     });
   });

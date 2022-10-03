@@ -6,6 +6,7 @@ import { roundRouteSchema } from './validators/round-route-validator';
 import { ApiError, badRequestError } from '../commons/errors/api-error';
 import { drawRoundRouteSchema } from './validators/draw-round-route-validator';
 import { DrawRoundRouteDomain } from './domains/draw-round-route';
+import { getGame } from '../game/game-service';
 
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
@@ -27,7 +28,6 @@ export function handleCreateRound(req: Request, res: Response, next: NextFunctio
 
 export function handleUpdateRoundDraw(req: Request, res: Response, next: NextFunction) {
   try {
-    // TODO: validate this is correct round of game - middleware!
     const drawRoundRouteParams = getDrawRoundRouteParams(req);
     const result = drawCard(getRoundId(drawRoundRouteParams), drawRoundRouteParams.source);
     res.json(result);
@@ -76,6 +76,13 @@ function getRoundRouteParams(req: Request): RoundRouteDomain {
   if (error) {
     throw new ApiError({ ...badRequestError, message: error.message });
   }
+
+  const gameInfo = getGame(value.gameId);
+  if (gameInfo.roundNumber != value.roundNumber) {
+    const message = `getDrawRoundRouteParams: unexpected round number. gameId: ${value.gameId} | expected roundNumber: ${gameInfo.roundNumber} | passed: ${value.roundNumber}`;
+    throw new ApiError({ ...badRequestError, message });
+  }
+
   return { gameId: value.gameId, roundNumber: parseInt(value.roundNumber), source: value.source };
 }
 
