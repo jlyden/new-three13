@@ -1,3 +1,4 @@
+import exp from 'constants';
 import * as utils from '../../../src/commons/utils/utils';
 
 describe('getIndexOfRoundFirstPlayer', () => {
@@ -59,6 +60,16 @@ describe('getIndexOfRoundFirstPlayer', () => {
     [6, 13, 4],
   ]) ('returns expected value for playerCount %d and round %d', (playerCount: number, roundNumber: number, expected: number) => {
     const actual = utils.getIndexOfRoundFirstPlayer(roundNumber, playerCount);
+    expect(actual).toBe(expected);
+  });
+});
+
+
+describe('getNextPlayer', () => {
+  it.each([
+
+  ]) ('returns expected value for playerList and currentPlayer', (playerList: string[], currentPlayer: string, expected: string) => {
+    const actual = utils.getNextPlayer(playerList, currentPlayer);
     expect(actual).toBe(expected);
   });
 });

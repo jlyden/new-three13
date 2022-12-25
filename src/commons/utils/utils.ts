@@ -1,6 +1,17 @@
-import { CardDomain } from "../../card-group/domains/card";
-
 export function getIndexOfRoundFirstPlayer(roundNumber: number, playerCount: number) {
   const transformer = 3 - playerCount;
   return (roundNumber - transformer) % playerCount;
+}
+
+// TODO: TEST
+export function getNextPlayer(playerList: string[], currentPlayer: string): string {
+  const playerCount = playerList.length;
+  const currentPlayerIndex = playerList.indexOf(currentPlayer);
+  const nextPlayerIndex = currentPlayerIndex + 1;
+  const endOfList = nextPlayerIndex === playerCount;
+  return endOfList ? playerList[0] : playerList[nextPlayerIndex];
+}
+
+export function assembleRoundId(gameId: string, roundNumber: number): string {
+  return `${gameId}/${roundNumber}`;
 }

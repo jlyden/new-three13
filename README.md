@@ -15,7 +15,7 @@ npm run serve
 
 ## TODO
 * fill in methods for discard
-* update integration tests for draw and discard
+* update integration tests for discard
 * round out integration tests for failure states
 * add & setup inversify
 

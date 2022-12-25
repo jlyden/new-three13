@@ -1,6 +1,7 @@
 import { assembleDeck, shuffleCards } from "../commons/utils/card-group";
 import { CardDomain } from "./domains/card";
 
+// TODO: Rethink this class
 export class CardGroup {
   protected group: CardDomain[];
   

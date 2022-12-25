@@ -1,16 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
-import { createRound, drawCard, getRound } from './round-service';
+import { createRound, drawCard, getRound, processDiscard } from './round-service';
 import { RoundRouteDomain } from "./domains/round-route";
 import { CreateRoundReturnDomain } from './domains/create-round-return';
 import { roundRouteSchema } from './validators/round-route-validator';
 import { ApiError, badRequestError } from '../commons/errors/api-error';
-import { drawRoundRouteSchema } from './validators/draw-round-route-validator';
-import { DrawRoundRouteDomain } from './domains/draw-round-route';
+import { drawRouteSchema } from './validators/draw-route-validator';
+import { DrawRouteDomain } from './domains/draw-route';
 import { getGame } from '../game/game-service';
+import { DiscardBodyDomain } from './domains/discard-body';
+import { discardBodySchema } from './validators/discard-body-validator';
 
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
-    const result = getRound(getRoundId(getRoundRouteParams(req)));
+    const { gameId, roundNumber } = getRoundRouteParams(req);
+    const result = getRound(gameId, roundNumber);
     res.json(result);
   } catch (error) {
     next(error);
@@ -19,7 +22,8 @@ export function handleGetRound(req: Request, res: Response, next: NextFunction) 
 
 export function handleCreateRound(req: Request, res: Response, next: NextFunction) {
   try {
-    const result: CreateRoundReturnDomain = createRound(getRoundRouteParams(req));
+    const { gameId, roundNumber } = getRoundRouteParams(req);
+    const result: CreateRoundReturnDomain = createRound(gameId, roundNumber);
     res.json(result);
   } catch (error) {
     next(error);
@@ -28,20 +32,20 @@ export function handleCreateRound(req: Request, res: Response, next: NextFunctio
 
 export function handleUpdateRoundDraw(req: Request, res: Response, next: NextFunction) {
   try {
-    const drawRoundRouteParams = getDrawRoundRouteParams(req);
-    const result = drawCard(getRoundId(drawRoundRouteParams), drawRoundRouteParams.source);
+    const { gameId, roundNumber, source } = getDrawRoundRouteParams(req);
+    const result = drawCard(gameId, roundNumber, source);
     res.json(result);
   } catch (error) {
     next(error);
   }
 }
 
-// TODO: finish
 export function handleUpdateRoundDiscard(req: Request, res: Response, next: NextFunction) {
   try {
-    const routeParams = JSON.stringify(req.params);
-    const bodyParams = JSON.stringify(req.body);
-    res.send(`PUT /round/discard | Params: ${routeParams} && ${bodyParams}`);
+    const { gameId, roundNumber } = getRoundRouteParams(req);
+    const { card, dispatch } = getDiscardBodyParams(req);
+    const result = processDiscard(gameId, roundNumber, card, dispatch);
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -71,8 +75,8 @@ function getRoundRouteParams(req: Request): RoundRouteDomain {
 /**
  * Return validated draw round route params (PUT /draw)
  */
- function getDrawRoundRouteParams(req: Request): DrawRoundRouteDomain {
-  const { value, error } = drawRoundRouteSchema.validate(req.params);
+ function getDrawRoundRouteParams(req: Request): DrawRouteDomain {
+  const { value, error } = drawRouteSchema.validate(req.params);
   if (error) {
     throw new ApiError({ ...badRequestError, message: error.message });
   }
@@ -86,7 +90,15 @@ function getRoundRouteParams(req: Request): RoundRouteDomain {
   return { gameId: value.gameId, roundNumber: parseInt(value.roundNumber), source: value.source };
 }
 
-function getRoundId(roundRouteParams: RoundRouteDomain): string {
-  const { gameId, roundNumber } = roundRouteParams;
-  return `${gameId}/${roundNumber}`;
+function getDiscardBodyParams(req: Request): DiscardBodyDomain {
+  const { value, error } = discardBodySchema.validate(req.body);
+  if (error) {
+    throw new ApiError({ ...badRequestError, message: error.message });
+  }
+
+  return { card: value.card, dispatch: value.dispatch };
 }
+function assembleRoundId(gameId: string, roundNumber: number): string {
+  throw new Error('Function not implemented.');
+}
+
