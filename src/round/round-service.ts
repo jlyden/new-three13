@@ -4,7 +4,7 @@ import { CreateRoundReturnDomain } from "./domains/create-round-return";
 import { getFromCache, saveToCache } from "../commons/utils/cache";
 import { Round } from "./round";
 import { ApiError, badRequestError } from "../commons/errors/api-error";
-import { CardDomain } from "../card-group/domains/card";
+import { CardDomain, EMPTY_CARD } from "../card-group/domains/card";
 import { discardFromGroup } from "../commons/utils/card-group";
 import { assembleRoundId, getNextPlayer } from "../commons/utils/utils";
 
@@ -37,12 +37,12 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
   let visibleCard = round.visibleCard;
 
   // move cards around
-  const deckCard = round.getCardFromDeck();
   if (source === DRAW_TYPE_DECK) {
+    const deckCard = round.getCardFromDeck();
     playerHand.push(deckCard);
   } else if (source === DRAW_TYPE_VISIBLE) {
     playerHand.push(visibleCard);
-    visibleCard = deckCard;
+    visibleCard = EMPTY_CARD;
   } else {
     const message = `drawCard: invalid source: ${source}`;
     throw new ApiError({ ...badRequestError, message });
@@ -79,6 +79,8 @@ export function processDiscard(gameId: string, roundNumber: number, card: CardDo
   if (dispatch) {
     // see if user can validly leave game
   }
+
+  return updatedRound;
 }
 
 function saveRound(round: RoundDomain) {

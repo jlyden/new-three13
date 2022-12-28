@@ -5,7 +5,7 @@ import { GameDomain } from "./domains/game";
 
 export const GAME_STARTING_ROUND_NUMBER = 3;
 
-export function createGame(playerList: [], gameId?: string): string {
+export function createGame(playerList: string[], gameId?: string): string {
   const id = gameId ?? crypto.randomUUID();
   const game: GameDomain = {
     id,

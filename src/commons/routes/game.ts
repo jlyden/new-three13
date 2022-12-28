@@ -12,6 +12,7 @@ game.get(GAME_ROUTE, handleGetGame);
 
 game.post('/game', handleCreateGame);
 
+// TODO
 //game.delete(GAME_ROUTE, handleDeleteGame);
 
 export { game };

@@ -17,3 +17,11 @@ export function getFromCache(key: string): object {
   }
   return value as object;
 }
+
+export function deleteFromCache(key: string): void {
+  cache.del(key);
+}
+
+export function flushCache(): void {
+  cache.flushAll();
+}

@@ -1,4 +1,4 @@
-import { assembleDeck, shuffleCards } from "../commons/utils/card-group";
+import { assembleDeck, shuffleCards } from "../commons/utils/deck";
 import { CardDomain } from "./domains/card";
 
 // TODO: Rethink this class

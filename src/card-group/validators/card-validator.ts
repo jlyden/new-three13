@@ -1,7 +1,7 @@
 import Joi from "joi";
-import { Suits } from "../domains/card";
+import { SUITS } from "../domains/card";
 
-const validSuits = Object.values(Suits).join(',');
+const validSuits = Object.values(SUITS).join(',');
 
 // TODO: TEST
 export const cardDomainSchema = Joi.object({

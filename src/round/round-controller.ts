@@ -98,7 +98,3 @@ function getDiscardBodyParams(req: Request): DiscardBodyDomain {
 
   return { card: value.card, dispatch: value.dispatch };
 }
-function assembleRoundId(gameId: string, roundNumber: number): string {
-  throw new Error('Function not implemented.');
-}
-
