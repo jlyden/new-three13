@@ -1,6 +1,6 @@
 import { CardDomain } from '../card-group/domains/card';
 import { RoundDomain } from './domains/round';
-import { getIndexOfRoundFirstPlayer } from '../commons/utils/utils';
+import { assembleRoundId, getIndexOfRoundFirstPlayer } from '../commons/utils/utils';
 import { CardGroup } from '../card-group/card-group';
 import { HandDomain } from '../card-group/domains/hand';
 import { ApiError, cardNotFoundError } from '../commons/errors/api-error';
@@ -19,7 +19,7 @@ export class Round {
 
   static createNewRound(roundNumber: number, playerList: string[], gameId: string): Round {
     const round = new Round();
-    round.id = `${gameId}/${roundNumber}`;
+    round.id = assembleRoundId(gameId, roundNumber);
     round.deck = round.prepareDeck();
     round.hands = round.dealHands(roundNumber, playerList);
     round.visibleCard = round.getCardFromDeck();

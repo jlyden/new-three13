@@ -1,5 +1,5 @@
 import * as utils from '../../../src/commons/utils/utils';
-import { threePlayerList } from '../../helper/test-data';
+import { threePlayerList, fourPlayerList } from '../../helper/test-data';
 
 describe('getIndexOfRoundFirstPlayer', () => {
   it.each([
@@ -64,12 +64,15 @@ describe('getIndexOfRoundFirstPlayer', () => {
   });
 });
 
-// TODO: incomplete
 describe('getNextPlayer', () => {
   it.each([
     [threePlayerList, threePlayerList[0], threePlayerList[1]],
     [threePlayerList, threePlayerList[1], threePlayerList[2]],
     [threePlayerList, threePlayerList[2], threePlayerList[0]],
+    [fourPlayerList, fourPlayerList[0], fourPlayerList[1]],
+    [fourPlayerList, fourPlayerList[1], fourPlayerList[2]],
+    [fourPlayerList, fourPlayerList[2], fourPlayerList[3]],
+    [fourPlayerList, fourPlayerList[3], fourPlayerList[0]],
   ]) ('returns expected value for playerList and currentPlayer', (playerList: string[], currentPlayer: string, expected: string) => {
     const actual = utils.getNextPlayer(playerList, currentPlayer);
     expect(actual).toBe(expected);

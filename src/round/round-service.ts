@@ -37,15 +37,18 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
   let visibleCard = round.visibleCard;
 
   // move cards around
-  if (source === DRAW_TYPE_DECK) {
-    const deckCard = round.getCardFromDeck();
-    playerHand.push(deckCard);
-  } else if (source === DRAW_TYPE_VISIBLE) {
-    playerHand.push(visibleCard);
-    visibleCard = EMPTY_CARD;
-  } else {
-    const message = `drawCard: invalid source: ${source}`;
-    throw new ApiError({ ...badRequestError, message });
+  switch (source) {
+    case DRAW_TYPE_DECK:
+      playerHand.push(round.getCardFromDeck());
+      break;
+    case DRAW_TYPE_VISIBLE:
+      playerHand.push(visibleCard);
+      visibleCard = EMPTY_CARD;
+        break;
+    default: {
+      const message = `drawCard: invalid source: ${source}`;
+      throw new ApiError({ ...badRequestError, message });
+    }
   }
 
   // update and save
@@ -56,23 +59,18 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
   return updatedRound;
 }
 
-// TODO: finish WIP
-export function processDiscard(gameId: string, roundNumber: number, card: CardDomain, dispatch: boolean) {
+export function processDiscard(gameId: string, roundNumber: number, discard: CardDomain, dispatch: boolean): RoundDomain {
   // retrieve data
   const { playerList } = getGame(gameId);
-
   const round = getRound(gameId, roundNumber);
   const nextPlayer = round.nextPlayer;
   const playerHand = round.hands[nextPlayer];
 
-  // move cards around
-  const updatedHand = discardFromGroup(playerHand, card);
-  const visibleCard = card;
-
   // update and save
-  const updatedHands = { ...round.hands, nextPlayer: updatedHand }
+  const updatedHand = discardFromGroup(playerHand, discard);
+  const updatedHands = { ...round.hands, [nextPlayer]: updatedHand }
   const nextUpPlayer = getNextPlayer(playerList, nextPlayer);
-  const updatedRound = { ...round, hands: updatedHands, visibleCard, nextPlayer: nextUpPlayer }
+  const updatedRound = { ...round, hands: updatedHands, visibleCard: discard, nextPlayer: nextUpPlayer }
   saveRound(updatedRound);
 
   // TODO: evaluate dispatch

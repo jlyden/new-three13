@@ -4,8 +4,10 @@ import { SUITS } from "../../src/card-group/domains/card";
 const user1 = 'alice';
 const user2 = 'bob';
 const user3 = 'carol';
+const user4 = 'dennis';
 
 export const threePlayerList = [ user1, user2, user3 ];
+export const fourPlayerList = threePlayerList.concat([user4]);
 
 // Guids
 export const missingGameId = '82a4af67-cbff-41a2-976f-792b22a5ba55';

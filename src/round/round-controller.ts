@@ -43,8 +43,8 @@ export function handleUpdateRoundDraw(req: Request, res: Response, next: NextFun
 export function handleUpdateRoundDiscard(req: Request, res: Response, next: NextFunction) {
   try {
     const { gameId, roundNumber } = getRoundRouteParams(req);
-    const { card, dispatch } = getDiscardBodyParams(req);
-    const result = processDiscard(gameId, roundNumber, card, dispatch);
+    const { discard, dispatch } = getDiscardBodyParams(req);
+    const result = processDiscard(gameId, roundNumber, discard, dispatch);
     res.json(result);
   } catch (error) {
     next(error);
@@ -62,13 +62,15 @@ export function handleDeleteRound(req: Request, res: Response, next: NextFunctio
 }
 
 /**
- * Return validated round route params (GET, POST, DELETE)
+ * Return validated get round route params (GET, POST, PUT /discard, DELETE)
  */
 function getRoundRouteParams(req: Request): RoundRouteDomain {
   const { value, error } = roundRouteSchema.validate(req.params);
   if (error) {
     throw new ApiError({ ...badRequestError, message: error.message });
   }
+
+  ensureValidRoundRouteParam(value.gameId, value.roundNumber);
   return { gameId: value.gameId, roundNumber: parseInt(value.roundNumber) };
 }
 
@@ -81,20 +83,27 @@ function getRoundRouteParams(req: Request): RoundRouteDomain {
     throw new ApiError({ ...badRequestError, message: error.message });
   }
 
-  const gameInfo = getGame(value.gameId);
-  if (gameInfo.roundNumber != value.roundNumber) {
-    const message = `getDrawRoundRouteParams: unexpected round number. gameId: ${value.gameId} | expected roundNumber: ${gameInfo.roundNumber} | passed: ${value.roundNumber}`;
-    throw new ApiError({ ...badRequestError, message });
-  }
-
+  ensureValidRoundRouteParam(value.gameId, value.roundNumber);
   return { gameId: value.gameId, roundNumber: parseInt(value.roundNumber), source: value.source };
 }
 
+/**
+ * Return validated PUT /discard body params
+ */
 function getDiscardBodyParams(req: Request): DiscardBodyDomain {
   const { value, error } = discardBodySchema.validate(req.body);
   if (error) {
     throw new ApiError({ ...badRequestError, message: error.message });
   }
 
-  return { card: value.card, dispatch: value.dispatch };
+  return { discard: value.card, dispatch: value.dispatch };
+}
+
+function ensureValidRoundRouteParam(gameId: string, round: number): void {
+  const gameInfo = getGame(gameId);
+  if (gameInfo.roundNumber != round) {
+    const message = `ensureValidRoundRouteParams: unexpected round number. gameId: ${gameId} | expected roundNumber: ${gameInfo.roundNumber} | passed: ${round}`;
+    throw new ApiError({ ...badRequestError, message });
+  }
+  return;
 }

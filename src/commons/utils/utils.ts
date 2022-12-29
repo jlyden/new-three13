@@ -3,7 +3,6 @@ export function getIndexOfRoundFirstPlayer(roundNumber: number, playerCount: num
   return (roundNumber - transformer) % playerCount;
 }
 
-// TODO: TEST
 export function getNextPlayer(playerList: string[], currentPlayer: string): string {
   const playerCount = playerList.length;
   const currentPlayerIndex = playerList.indexOf(currentPlayer);

@@ -1,6 +1,6 @@
 import { CardDomain } from "../../card-group/domains/card";
 
 export interface DiscardBodyDomain {
-  card: CardDomain;
+  discard: CardDomain;
   dispatch: boolean;
 }
