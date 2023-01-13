@@ -5,12 +5,16 @@ import { getFromCache, saveToCache } from "../commons/utils/cache";
 import { Round } from "./round";
 import { ApiError, badRequestError } from "../commons/errors/api-error";
 import { CardDomain, EMPTY_CARD } from "../card-group/domains/card";
-import { discardFromGroup } from "../commons/utils/card-group";
+import { removeFromGroup } from "../commons/utils/card-group";
 import { assembleRoundId, getNextPlayer } from "../commons/utils/utils";
 
 export const DRAW_TYPE_DECK = 'deck';
 export const DRAW_TYPE_VISIBLE = 'visible';
 
+/**
+ * Saves new round
+ * Returns visibleCard and nextPlayer
+ */
 export function createRound(gameId: string, roundNumber: number): CreateRoundReturnDomain {
   const gameInfo = getGame(gameId);
   const round = Round.createNewRound(roundNumber, gameInfo.playerList, gameId);
@@ -23,12 +27,19 @@ export function createRound(gameId: string, roundNumber: number): CreateRoundRet
   }
 }
 
+/**
+ * Retrieves round
+ */
 export function getRound(gameId: string, roundNumber: number): Round {
   const roundId = assembleRoundId(gameId, roundNumber);
   const savedRoundDomain = getFromCache(roundId) as RoundDomain;
   return Round.prepExistingRound(savedRoundDomain);
 }
 
+/**
+ * Move face-up card or top face-down deck card to player's hand
+ * Return updated Round
+ */
 export function drawCard(gameId: string, roundNumber: number, source: string): RoundDomain {
   // retrieve data
   const round = getRound(gameId, roundNumber);
@@ -59,6 +70,11 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
   return updatedRound;
 }
 
+/**
+ * Move discard from player's hand to face-up card
+ * TODO: Handle dispatch (player going out)
+ * Return updated Round
+ */
 export function processDiscard(gameId: string, roundNumber: number, discard: CardDomain, dispatch: boolean): RoundDomain {
   // retrieve data
   const { playerList } = getGame(gameId);
@@ -67,7 +83,7 @@ export function processDiscard(gameId: string, roundNumber: number, discard: Car
   const playerHand = round.hands[nextPlayer];
 
   // update and save
-  const updatedHand = discardFromGroup(playerHand, discard);
+  const updatedHand = removeFromGroup(playerHand, discard);
   const updatedHands = { ...round.hands, [nextPlayer]: updatedHand }
   const nextUpPlayer = getNextPlayer(playerList, nextPlayer);
   const updatedRound = { ...round, hands: updatedHands, visibleCard: discard, nextPlayer: nextUpPlayer }
@@ -81,6 +97,9 @@ export function processDiscard(gameId: string, roundNumber: number, discard: Car
   return updatedRound;
 }
 
+/**
+ * Save Round
+ */
 function saveRound(round: RoundDomain) {
   saveToCache(round.id, round);
 }

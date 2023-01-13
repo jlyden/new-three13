@@ -14,10 +14,8 @@ npm run serve
 ```
 
 ## TODO
-* fill in methods for discard
-* update integration tests for discard
-* round out integration tests for failure states
 * add & setup inversify
+* circle back to processDiscard with dispatch = true
 
 ## Helpful resources
 ### sample test requests via [curl](https://curl.se/)

@@ -242,7 +242,7 @@ describe('round', () => {
         suit: 'Joker',
         value: 5,
       };
-      const expectedReturn = { error: `discardFromGroup: unexpected filter: cards: ${JSON.stringify(beforePlayerHand)} | discard: ${JSON.stringify(cardNotInHand)}` }
+      const expectedReturn = { error: `removeFromGroup error! cards: ${JSON.stringify(beforePlayerHand)} | discard: ${JSON.stringify(cardNotInHand)}` }
       const discardParams = { card: cardNotInHand, dispatch: false }
       const { body, status } = await request(testApp).put(`/game/${SAVED_GAME_ID}/round/${GAME_STARTING_ROUND_NUMBER}/discard`).send(discardParams);
       expect(status).toEqual(HttpCode.BAD_REQUEST);
