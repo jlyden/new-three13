@@ -29,12 +29,17 @@ export const badRequestError: ApiErrorDomain = {
   httpCode: HttpCode.BAD_REQUEST,
 }
 
+export const cardNotFoundError: ApiErrorDomain = {
+  name: 'Card Not Found',
+  httpCode: HttpCode.NOT_FOUND,
+}
+
 export const notFoundError: ApiErrorDomain = {
   name: 'Not Found',
   httpCode: HttpCode.NOT_FOUND,
 }
 
-export const cardNotFoundError: ApiErrorDomain = {
-  name: 'Card Not Found',
-  httpCode: HttpCode.NOT_FOUND,
+export const serverError: ApiErrorDomain = {
+  name: 'Internal Server Error',
+  httpCode: HttpCode.INTERNAL_SERVER_ERROR,
 }

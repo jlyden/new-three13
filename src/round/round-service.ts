@@ -3,8 +3,8 @@ import { RoundDomain } from "./domains/round";
 import { CreateRoundReturnDomain } from "./domains/create-round-return";
 import { getFromCache, saveToCache } from "../commons/utils/cache";
 import { Round } from "./round";
-import { ApiError, badRequestError } from "../commons/errors/api-error";
-import { CardDomain, EMPTY_CARD } from "../card-group/domains/card";
+import { ApiError, badRequestError, serverError } from "../commons/errors/api-error";
+import { CardDomain } from "../card-group/domains/card";
 import { removeFromGroup } from "../commons/utils/card-group";
 import { assembleRoundId, getNextPlayer } from "../commons/utils/utils";
 
@@ -18,7 +18,11 @@ export const DRAW_TYPE_VISIBLE = 'visible';
 export function createRound(gameId: string, roundNumber: number): CreateRoundReturnDomain {
   const gameInfo = getGame(gameId);
   const round = Round.createNewRound(roundNumber, gameInfo.playerList, gameId);
-  saveRound(round);
+  if (!round.visibleCard) {
+    const message = `Unable to retrieve visibleCard for Round: ${assembleRoundId(gameId, roundNumber)}`;
+    throw new ApiError({ ...serverError, message });
+  }
+saveRound(round);
   gameInfo.roundNumber = roundNumber;
   saveGame(gameInfo);
   return {
@@ -45,6 +49,13 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
   const round = getRound(gameId, roundNumber);
   const nextPlayer = round.nextPlayer;
   const playerHand = round.hands[nextPlayer];
+
+  // Ensure user only attempts to draw once during their turn
+  if (playerHand.length > roundNumber) {
+    const message = `drawCard: invalid draw: User already has an extra card in hand: gameId ${gameId} | round: ${roundNumber} | nextPlayer: ${nextPlayer}`;
+    throw new ApiError({ ...badRequestError, message });
+}
+
   let visibleCard = round.visibleCard;
 
   // move cards around
@@ -53,9 +64,13 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
       playerHand.push(round.getCardFromDeck());
       break;
     case DRAW_TYPE_VISIBLE:
+      if (!visibleCard) {
+        const message = `Unable to retrieve visibleCard for Round: ${assembleRoundId(gameId, roundNumber)}`;
+        throw new ApiError({ ...serverError, message });
+      }
       playerHand.push(visibleCard);
-      visibleCard = EMPTY_CARD;
-        break;
+      visibleCard = undefined;
+      break;
     default: {
       const message = `drawCard: invalid source: ${source}`;
       throw new ApiError({ ...badRequestError, message });
@@ -63,7 +78,7 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
   }
 
   // update and save
-  const updatedHands = { ...round.hands, nextPlayer: playerHand }
+  const updatedHands = { ...round.hands, [nextPlayer]: playerHand }
   const updatedRound = { ...round, hands: updatedHands, visibleCard }
   saveRound(updatedRound);
 

@@ -5,6 +5,6 @@ export interface RoundDomain {
   id: string;
   deck: CardDomain[];
   hands: HandDomain;
-  visibleCard: CardDomain;
+  visibleCard: CardDomain|undefined;
   nextPlayer: string;
 }

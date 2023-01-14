@@ -10,7 +10,7 @@ import { createRound, drawCard, DRAW_TYPE_DECK, DRAW_TYPE_VISIBLE } from '../../
 import { HttpCode } from '../../src/commons/errors/api-error';
 import { deleteFromCache, flushCache } from '../../src/commons/utils/cache';
 import { errorHandler } from '../../src/commons/middleware/error-handler';
-import { CardDomain, EMPTY_CARD } from '../../src/card-group/domains/card';
+import { CardDomain } from '../../src/card-group/domains/card';
 import { assembleRoundId } from '../../src/commons/utils/utils';
 
 const INCORRECT_ROUND = 10
@@ -123,7 +123,7 @@ describe('round', () => {
 
       // check deck and visible card
       expect(body.deck.length).toEqual(beforeDeck.length);
-      expect(body.visibleCard).toStrictEqual(EMPTY_CARD);
+      expect(body.visibleCard).toBe(undefined);
 
       // check player's hand
       const afterPlayerHand = body.hands[playerOne];
@@ -168,8 +168,20 @@ describe('round', () => {
       expect(body).toEqual(expectedReturn);
     });
 
+    it('returns 400 when user tries to draw multiple times during their turn', async () => {
+      // arrange
+      await request(testApp).get(`/game/${SAVED_GAME_ID}/round/${GAME_STARTING_ROUND_NUMBER}`);
+      await request(testApp).put(`/game/${SAVED_GAME_ID}/round/${GAME_STARTING_ROUND_NUMBER}/draw/${DRAW_TYPE_VISIBLE}`);
+
+      // act
+      const expectedReturn = { error: `drawCard: invalid draw: User already has an extra card in hand: gameId ${SAVED_GAME_ID} | round: ${GAME_STARTING_ROUND_NUMBER} | nextPlayer: ${playerOne}` }
+      const { body, status } = await request(testApp).put(`/game/${SAVED_GAME_ID}/round/${GAME_STARTING_ROUND_NUMBER}/draw/${DRAW_TYPE_VISIBLE}`);
+      expect(status).toEqual(HttpCode.BAD_REQUEST);
+      expect(body).toEqual(expectedReturn);
+    });
+    
     it('returns 400 when trying to Draw but incorrect Round', async () => {
-      const expectedReturn = { error: `ensureValidRoundRouteParams: unexpected round number. gameId: ${SAVED_GAME_ID} | expected roundNumber: 3 | passed: ${INCORRECT_ROUND}` }
+      const expectedReturn = { error: `ensureValidRoundRouteParams: unexpected round number. gameId: ${SAVED_GAME_ID} | expected roundNumber: ${GAME_STARTING_ROUND_NUMBER} | passed: ${INCORRECT_ROUND}` }
       const { body, status } = await request(testApp).put(`/game/${SAVED_GAME_ID}/round/${INCORRECT_ROUND}/draw/${DRAW_TYPE_VISIBLE}`);
       expect(status).toEqual(HttpCode.BAD_REQUEST);
       expect(body).toEqual(expectedReturn);
