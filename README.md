@@ -14,6 +14,10 @@ npm run serve
 ```
 
 ## TODO
+* FIXME: 'draw' is not working properly
+  * still seeing 'nextPlayer' show up in playerlist
+  * visible card is not being set to null (might need to change domain)
+  * ensure blocking user drawing multiple times
 * add & setup inversify
 * circle back to processDiscard with dispatch = true
 

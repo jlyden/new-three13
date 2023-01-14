@@ -87,5 +87,5 @@ curl -i -X PUT http://localhost:3000/game/fedc42aa-cf90-4ae0-ab52-290fad8f9d64/r
 curl -i -X PUT http://localhost:3000/game/fedc42aa-cf90-4ae0-ab52-290fad8f9d64/round/3/draw/visible
 
 # PUT discard
-curl -i -X PUT -H 'Content-Type: application/json' -d '{"card": {"suit": "Heart", "value": 3}, "dispatch": "false"}' http://localhost:3000/game/<gameId>/round/<roundNumber>/discard
+curl -i -X PUT -H 'Content-Type: application/json' -d '{"card": {"suit": "Heart", "value": 3}, "dispatch": "false"}' http://localhost:3000/game/fedc42aa-cf90-4ae0-ab52-290fad8f9d64/round/3/discard
 ```
