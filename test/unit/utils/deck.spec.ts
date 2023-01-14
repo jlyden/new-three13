@@ -50,4 +50,3 @@ describe('shuffleCards', () => {
     expect(afterDeck.length).toStrictEqual(beforeDeck.length);
   });
 });
-
