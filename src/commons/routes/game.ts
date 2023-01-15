@@ -1,18 +1,10 @@
 import express from 'express';
-import { handleCreateGame, handleGetGame } from '../../game/game-controller';
-
-const GAME_ROUTE = `/game/:gameId`;
+import { handleCreateGame, handleDeleteGame, handleGetGame } from '../../game/game-controller';
 
 const game = express.Router();
 
-// TODO
-//game.use(GAME_ROUTE, validateGameRouteSchema);
-
-game.get(GAME_ROUTE, handleGetGame);
-
+game.get('/game/:gameId', handleGetGame);
 game.post('/game', handleCreateGame);
-
-// TODO
-//game.delete(GAME_ROUTE, handleDeleteGame);
+game.delete('/game/:gameId', handleDeleteGame);
 
 export { game };

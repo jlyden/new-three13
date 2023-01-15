@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError, badRequestError } from "../commons/errors/api-error";
-import { createGame, getGame } from "./game-service";
+import { ApiError, badRequestError, HttpCode } from "../commons/errors/api-error";
+import { createGame, deleteGame, getGame } from "./game-service";
 import { gameRouteSchema } from "./validators/game-route-validator";
 
 export function handleGetGame(req: Request, res: Response, next: NextFunction) {
@@ -17,6 +17,17 @@ export function handleCreateGame(req: Request, res: Response, next: NextFunction
   try {
     const { playerList, gameId } = req.body;
     const result = createGame(playerList, gameId);
+    res.status(HttpCode.CREATED).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function handleDeleteGame(req: Request, res: Response, next: NextFunction) {
+  try {
+    const gameId = getGameRouteParams(req);
+    deleteGame(gameId);
+    const result = { 'message': `Game deleted: ${gameId}` };
     res.json(result);
   } catch (error) {
     next(error);

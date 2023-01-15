@@ -18,7 +18,7 @@ testApp.use(errorHandler);
 
 describe('game', () => {
   describe('GET single', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       createGame(threePlayerList, savedGameId);
     });
   
@@ -46,15 +46,32 @@ describe('game', () => {
       const randomGameId = randomUUID();
       const createGameParams = { playerList: threePlayerList, gameId: randomGameId }
       const { body, status } = await request(testApp).post('/game').send(createGameParams);
-      expect(status).toEqual(HttpCode.OK);
+      expect(status).toEqual(HttpCode.CREATED);
       expect(body).toBe(randomGameId);
     });
 
     it('returns successfully without gameId passed', async () => {
       const createGameParams = { playerList: threePlayerList }
       const { body, status } = await request(testApp).post('/game').send(createGameParams);
-      expect(status).toEqual(HttpCode.OK);
+      expect(status).toEqual(HttpCode.CREATED);
       expect(typeof body).toBe('string');
+    });
+  });
+
+  describe('DELETE', () => {
+    beforeEach(() => {
+      createGame(threePlayerList, savedGameId);
+    });
+  
+    afterAll(() => {
+      flushCache();
+    });
+  
+    it('returns successfully when game is found and deleted', async () => {
+      const expectedReturn = { 'message': `Game deleted: ${savedGameId}` };
+      const { body, status } = await request(testApp).delete(`/game/${savedGameId}`);
+      expect(status).toEqual(HttpCode.OK);
+      expect(body).toEqual(expectedReturn);
     });
   });
 });

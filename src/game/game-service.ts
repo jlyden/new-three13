@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { saveToCache, getFromCache } from "../commons/utils/cache";
+import { saveToCache, getFromCache, deleteFromCache } from "../commons/utils/cache";
 import { GameDomain } from "./domains/game";
 
 export const GAME_STARTING_ROUND_NUMBER = 3;
@@ -22,4 +22,8 @@ export function saveGame(game: GameDomain) {
 
 export function getGame(gameId: string): GameDomain {
   return getFromCache(gameId) as GameDomain;
+}
+
+export function deleteGame(gameId: string): void {
+  return deleteFromCache(gameId);
 }
