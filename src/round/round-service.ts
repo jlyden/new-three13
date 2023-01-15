@@ -1,7 +1,7 @@
 import { getGame, saveGame } from "../game/game-service";
 import { RoundDomain } from "./domains/round";
 import { CreateRoundReturnDomain } from "./domains/create-round-return";
-import { getFromCache, saveToCache } from "../commons/utils/cache";
+import { deleteFromCache, getFromCache, saveToCache } from "../commons/utils/cache";
 import { Round } from "./round";
 import { ApiError, badRequestError, serverError } from "../commons/errors/api-error";
 import { CardDomain } from "../card-group/domains/card";
@@ -12,7 +12,7 @@ export const DRAW_TYPE_DECK = 'deck';
 export const DRAW_TYPE_VISIBLE = 'visible';
 
 /**
- * Saves new round
+ * Create new Round
  * Returns visibleCard and nextPlayer
  */
 export function createRound(gameId: string, roundNumber: number): CreateRoundReturnDomain {
@@ -22,7 +22,7 @@ export function createRound(gameId: string, roundNumber: number): CreateRoundRet
     const message = `Unable to retrieve visibleCard for Round: ${assembleRoundId(gameId, roundNumber)}`;
     throw new ApiError({ ...serverError, message });
   }
-saveRound(round);
+  saveRound(round);
   gameInfo.roundNumber = roundNumber;
   saveGame(gameInfo);
   return {
@@ -32,7 +32,8 @@ saveRound(round);
 }
 
 /**
- * Retrieves round
+ * Retrieve Round
+ * Returns RoundDomain
  */
 export function getRound(gameId: string, roundNumber: number): Round {
   const roundId = assembleRoundId(gameId, roundNumber);
@@ -42,7 +43,7 @@ export function getRound(gameId: string, roundNumber: number): Round {
 
 /**
  * Move face-up card or top face-down deck card to player's hand
- * Return updated Round
+ * Returns updated RoundDomain
  */
 export function drawCard(gameId: string, roundNumber: number, source: string): RoundDomain {
   // retrieve data
@@ -88,7 +89,7 @@ export function drawCard(gameId: string, roundNumber: number, source: string): R
 /**
  * Move discard from player's hand to face-up card
  * TODO: Handle dispatch (player going out)
- * Return updated Round
+ * Returns updated RoundDomain
  */
 export function processDiscard(gameId: string, roundNumber: number, discard: CardDomain, dispatch: boolean): RoundDomain {
   // retrieve data
@@ -110,6 +111,14 @@ export function processDiscard(gameId: string, roundNumber: number, discard: Car
   }
 
   return updatedRound;
+}
+
+/**
+ * Delete Round
+ */
+export function deleteRound(gameId: string, roundNumber: number): void {
+  const roundId = assembleRoundId(gameId, roundNumber);
+  return deleteFromCache(roundId);
 }
 
 /**

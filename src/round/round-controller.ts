@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { createRound, drawCard, getRound, processDiscard } from './round-service';
+import { createRound, deleteRound, drawCard, getRound, processDiscard } from './round-service';
 import { RoundRouteDomain } from "./domains/round-route";
 import { CreateRoundReturnDomain } from './domains/create-round-return';
 import { roundRouteSchema } from './validators/round-route-validator';
@@ -10,6 +10,9 @@ import { getGame } from '../game/game-service';
 import { DiscardBodyDomain } from './domains/discard-body';
 import { discardBodySchema } from './validators/discard-body-validator';
 
+/**
+ * Handler for GET /game/:gameId/round/:roundNumber
+ */
 export function handleGetRound(req: Request, res: Response, next: NextFunction) {
   try {
     const { gameId, roundNumber } = getRoundRouteParams(req);
@@ -20,6 +23,9 @@ export function handleGetRound(req: Request, res: Response, next: NextFunction) 
   }
 }
 
+/**
+ * Handler for POST /game/:gameId/round/:roundNumber
+ */
 export function handleCreateRound(req: Request, res: Response, next: NextFunction) {
   try {
     const { gameId, roundNumber } = getRoundRouteParams(req);
@@ -30,6 +36,9 @@ export function handleCreateRound(req: Request, res: Response, next: NextFunctio
   }
 }
 
+/**
+ * Handler for PUT /game/:gameId/round/:roundNumber/draw/:source
+ */
 export function handleUpdateRoundDraw(req: Request, res: Response, next: NextFunction) {
   try {
     const { gameId, roundNumber, source } = getDrawRoundRouteParams(req);
@@ -40,6 +49,9 @@ export function handleUpdateRoundDraw(req: Request, res: Response, next: NextFun
   }
 }
 
+/**
+ * Handler for PUT /game/:gameId/round/:roundNumber/discard
+ */
 export function handleUpdateRoundDiscard(req: Request, res: Response, next: NextFunction) {
   try {
     const { gameId, roundNumber } = getRoundRouteParams(req);
@@ -51,11 +63,15 @@ export function handleUpdateRoundDiscard(req: Request, res: Response, next: Next
   }
 }
 
-// TODO: finish
+/**
+ * Handler for DELETE /game/:gameId/round/:roundNumber
+ */
 export function handleDeleteRound(req: Request, res: Response, next: NextFunction) {
   try {
-    const routeParams = JSON.stringify(req.params);
-    res.send(`DELETE /round | Params: ${routeParams}`);
+    const { gameId, roundNumber } = getRoundRouteParams(req);
+    deleteRound(gameId, roundNumber);
+    const result = { 'message': `Round: ${roundNumber} deleted for Game: ${gameId}` };
+    res.json(result);
   } catch (error) {
     next(error);
   }
@@ -99,6 +115,9 @@ function getDiscardBodyParams(req: Request): DiscardBodyDomain {
   return { discard: value.card, dispatch: value.dispatch };
 }
 
+/**
+ * Ensure round param matches expected roundNumber for Game
+ */
 function ensureValidRoundRouteParam(gameId: string, round: number): void {
   const gameInfo = getGame(gameId);
   if (gameInfo.roundNumber != round) {

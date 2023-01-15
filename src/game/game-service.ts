@@ -5,6 +5,10 @@ import { GameDomain } from "./domains/game";
 
 export const GAME_STARTING_ROUND_NUMBER = 3;
 
+/**
+ * Create new Game
+ * Returns gameId
+ */
 export function createGame(playerList: string[], gameId?: string): string {
   const id = gameId ?? crypto.randomUUID();
   const game: GameDomain = {
@@ -16,14 +20,25 @@ export function createGame(playerList: string[], gameId?: string): string {
   return id;
 }
 
-export function saveGame(game: GameDomain) {
-  saveToCache(game.id, game);
-}
-
+/**
+ * Retrieve Game
+ * Returns GameDomain
+ */
 export function getGame(gameId: string): GameDomain {
   return getFromCache(gameId) as GameDomain;
 }
 
+/**
+ * Delete Game
+ */
 export function deleteGame(gameId: string): void {
   return deleteFromCache(gameId);
 }
+
+/**
+ * Save Game
+ */
+export function saveGame(game: GameDomain) {
+  saveToCache(game.id, game);
+}
+

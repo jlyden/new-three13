@@ -278,16 +278,28 @@ describe('round', () => {
     });
   });
 
-  describe('Route needs real implementation', () => {
-    const testGameId = '1b952e3c-6351-4414-a5e3-eb5343030a07';
-    const roundNumber = 4;
-    const commonRoundRoute = `/game/${testGameId}/round/${roundNumber}`;
+  describe('DELETE', () => {
+    beforeEach(() => {
+      createGame(threePlayerList, SAVED_GAME_ID);
+      createRound(SAVED_GAME_ID, GAME_STARTING_ROUND_NUMBER)
+    });
+  
+    afterAll(() => {
+      flushCache();
+    });
+  
+    it('returns successfully when round is found and deleted', async () => {
+      const expectedReturn = { 'message': `Round: ${GAME_STARTING_ROUND_NUMBER} deleted for Game: ${SAVED_GAME_ID}` };
+      const { body, status } = await request(testApp).delete(`/game/${SAVED_GAME_ID}/round/${GAME_STARTING_ROUND_NUMBER}`);
+      expect(status).toEqual(HttpCode.OK);
+      expect(body).toEqual(expectedReturn);
+    });
 
-    describe('DELETE', () => {
-      it('returns successfully', async () => {
-        const { text } = await request(testApp).delete(commonRoundRoute);
-        expect(text).toBe(`DELETE /round | Params: {"gameId":"${testGameId}","roundNumber":"${roundNumber}"}`);
-      });
+    it('returns 404 when trying to Delete but Game Not Found', async () => {
+      const expectedReturn = { error: `Cache empty for key: ${missingGameId}` }
+      const { body, status } = await request(testApp).delete(`/game/${missingGameId}/round/${GAME_STARTING_ROUND_NUMBER}`);
+      expect(status).toEqual(HttpCode.NOT_FOUND);
+      expect(body).toEqual(expectedReturn);
     });
   });
 });
