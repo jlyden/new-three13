@@ -1,9 +1,10 @@
-import { CardDomain } from '../card-group/domains/card';
+import { CardDomain } from './domains/card';
+import { assembleDeck, shuffleCards } from "../commons/utils/deck";
+import { getIndexOfRoundFirstPlayer } from '../commons/utils/player';
 import { RoundDomain } from './domains/round';
-import { assembleRoundId, getIndexOfRoundFirstPlayer } from '../commons/utils/utils';
-import { CardGroup } from '../card-group/card-group';
-import { HandDomain } from '../card-group/domains/hand';
 import { ApiError, cardNotFoundError } from '../commons/errors/api-error';
+import { assembleRoundId } from '../commons/utils/round';
+import { HandDomain } from './domains/hand';
 
 export const RAN_OUT_OF_CARDS = 'ran out of cards in deck';
 
@@ -47,7 +48,7 @@ export class Round {
   }
 
   private prepareDeck(): CardDomain[] {
-    return new CardGroup().getShuffledDeck();
+    return shuffleCards(assembleDeck());
   }
 
   /**

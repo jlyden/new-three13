@@ -1,4 +1,4 @@
-import * as utils from '../../../src/commons/utils/utils';
+import * as utils from '../../../src/commons/utils/player';
 import { threePlayerList, fourPlayerList } from '../../helper/test-data';
 
 describe('getIndexOfRoundFirstPlayer', () => {

@@ -10,8 +10,8 @@ import { createRound, drawCard, DRAW_TYPE_DECK, DRAW_TYPE_VISIBLE } from '../../
 import { HttpCode } from '../../src/commons/errors/api-error';
 import { deleteFromCache, flushCache } from '../../src/commons/utils/cache';
 import { errorHandler } from '../../src/commons/middleware/error-handler';
-import { CardDomain } from '../../src/card-group/domains/card';
-import { assembleRoundId } from '../../src/commons/utils/utils';
+import { CardDomain } from '../../src/round/domains/card';
+import { assembleRoundId } from '../../src/commons/utils/round';
 
 const INCORRECT_ROUND = 10
 const SAVED_GAME_ID = '79057bd6-5502-488d-b9ba-ca0f51945a9a';

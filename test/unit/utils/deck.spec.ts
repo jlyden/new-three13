@@ -1,5 +1,5 @@
-import { CardDomain, SUITS } from "../../../src/card-group/domains/card";
-import { reduceCardsByValue } from "../../../src/commons/utils/card-group";
+import { CardDomain, SUITS } from "../../../src/round/domains/card";
+import { reduceCardsByValue } from "../../../src/commons/utils/card";
 import { assembleDeck, shuffleCards } from "../../../src/commons/utils/deck";
 
 interface genObj { [key: string]: number }

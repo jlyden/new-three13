@@ -15,7 +15,7 @@ const app = prepareApp(routers);
 app.listen(PORT, () => console.log(`running on ${PORT} ⚡`));
 
 /**
- * Set up Express app with all required routes
+ * Set up Express app with all required routers
  */
 export function prepareApp(routers: Router[]): Express {
   const app: Express = express();

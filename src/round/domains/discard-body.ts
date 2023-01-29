@@ -1,4 +1,4 @@
-import { CardDomain } from "../../card-group/domains/card";
+import { CardDomain } from "./card";
 
 export interface DiscardBodyDomain {
   discard: CardDomain;

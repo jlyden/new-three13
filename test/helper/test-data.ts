@@ -1,4 +1,4 @@
-import { SUITS } from "../../src/card-group/domains/card";
+import { SUITS } from "../../src/round/domains/card";
 
 // Users
 const user1 = 'alice';
@@ -22,6 +22,7 @@ export const cardD5 = { suit: SUITS.Diamond, value: 5 };
 export const cardD6 = { suit: SUITS.Diamond, value: 6 };
 export const cardD8 = { suit: SUITS.Diamond, value: 8 };
 export const cardD13 = { suit: SUITS.Diamond, value: 13 };
+export const cardD7 = { suit: SUITS.Diamond, value: 7 };
 export const cardH3 = { suit: SUITS.Heart, value: 3 };
 export const cardH5 = { suit: SUITS.Heart, value: 5 };
 export const cardH10 = { suit: SUITS.Heart, value: 10 };

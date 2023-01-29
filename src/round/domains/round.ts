@@ -1,5 +1,5 @@
-import { CardDomain } from "../../card-group/domains/card";
-import { HandDomain } from "../../card-group/domains/hand";
+import { CardDomain } from "./card";
+import { HandDomain } from "./hand";
 
 export interface RoundDomain {
   id: string;

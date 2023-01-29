@@ -1,4 +1,4 @@
-import { CardDomain, SUITS, VALUES } from "../../src/card-group/domains/card";
+import { CardDomain, SUITS, VALUES } from "../../src/round/domains/card";
 
 export function validateGenericCard(card: CardDomain): void {
   expect(Object.keys(SUITS)).toContain(card.suit);

@@ -10,7 +10,3 @@ export function getNextPlayer(playerList: string[], currentPlayer: string): stri
   const endOfList = nextPlayerIndex === playerCount;
   return endOfList ? playerList[0] : playerList[nextPlayerIndex];
 }
-
-export function assembleRoundId(gameId: string, roundNumber: number): string {
-  return `${gameId}/${roundNumber}`;
-}

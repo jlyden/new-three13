@@ -4,9 +4,10 @@ import { CreateRoundReturnDomain } from "./domains/create-round-return";
 import { deleteFromCache, getFromCache, saveToCache } from "../commons/utils/cache";
 import { Round } from "./round";
 import { ApiError, badRequestError, serverError } from "../commons/errors/api-error";
-import { CardDomain } from "../card-group/domains/card";
-import { removeFromGroup } from "../commons/utils/card-group";
-import { assembleRoundId, getNextPlayer } from "../commons/utils/utils";
+import { CardDomain } from "./domains/card";
+import { removeFromGroup } from "../commons/utils/card";
+import { getNextPlayer } from "../commons/utils/player";
+import { assembleRoundId } from "../commons/utils/round";
 
 export const DRAW_TYPE_DECK = 'deck';
 export const DRAW_TYPE_VISIBLE = 'visible';

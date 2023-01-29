@@ -1,4 +1,4 @@
-import { CardDomain, SUITS, VALUES } from "../../card-group/domains/card";
+import { CardDomain, SUITS, VALUES } from "../../round/domains/card";
 
 export function assembleDeck(): CardDomain[] {
   const deck: CardDomain[] = [];
